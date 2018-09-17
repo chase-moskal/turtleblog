@@ -5,6 +5,9 @@
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"license": "UNLICENSED",
 	"main": "dist",
+	"bin": {
+		"turtleblog": "dist/turtleblog-cli.js"
+	},
 	"files": [
 		"dist"
 	],
