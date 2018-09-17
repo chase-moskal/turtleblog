@@ -1,0 +1,46 @@
+{
+	"name": "turtleblog",
+	"version": "0.0.0-dev.0",
+	"description": "simple tool to generate a basic blog",
+	"author": "Chase Moskal <chasemoskal@gmail.com>",
+	"license": "UNLICENSED",
+	"main": "dist",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"prepare": "run-s build test",
+		"build": "run-s build-barrel build-scripts build-demo",
+		"build:debug": "run-s build",
+		"build-clean": "rimraf dist && mkdirp dist",
+		"build-barrel": "barrelsby --directory source --delete && sed -i -e 's/;$//' source/index.ts",
+		"build-scripts": "tsc",
+		"build-demo": "exit 0",
+		"test": "exit 0",
+		"start": "http-server dist-demo",
+		"deploy": "bash deploy gh-pages"
+	},
+	"devDependencies": {
+		"@types/node": "10.9.4",
+		"barrelsby": "1.0.2",
+		"browserify": "16.2.2",
+		"envify": "4.1.0",
+		"http-server": "0.11.1",
+		"jstransformer-markdown-it": "2.1.0",
+		"markdown-it": "8.4.2",
+		"mkdirp": "0.5.1",
+		"npm-run-all": "4.1.3",
+		"pug": "2.0.3",
+		"pug-cli2": "1.0.0-alpha6.1",
+		"rimraf": "2.6.2",
+		"sass": "1.13.0",
+		"shelljs": "0.8.2",
+		"tsify": "4.0.0",
+		"typescript": "3.0.1",
+		"uglify-es": "3.3.9",
+		"uglifyify": "5.0.1"
+	},
+	"dependencies": {
+		"commander": "2.18.0"
+	}
+}

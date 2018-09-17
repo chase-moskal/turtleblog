@@ -1,0 +1,21 @@
+
+include ../layout
+
+doctype html
+html.devblog-index
+
+head
+	+heady("monarch devblog")
+	link(rel="stylesheet" href="../style.css")
+
+body
+	+monarch-header("devblog")
+
+	main.content
+		.articles
+			each article in allArticles
+				a(href=article.link)
+					span= article.date
+					|
+					|
+					span= article.title

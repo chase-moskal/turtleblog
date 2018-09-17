@@ -1,0 +1,10 @@
+
+@mixin slice() {
+	width: 80%;
+	max-width: 1600px;
+	margin: auto;
+	
+	@media (max-width: $smallpoint) {
+		width: 100%;
+	}
+}

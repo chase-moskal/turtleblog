@@ -1,0 +1,176 @@
+
+@import "style-mixins.scss";
+
+$slicepadding: 2rem;
+$smallpoint: 900px;
+
+$selection-color: orange;
+$charm-color: #00ffaa;
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html, body {
+	height:100%;
+	background: #333;
+	font-family: "Maven Pro", sans-serif;
+	color: white;
+}
+
+::selection {
+	background: $selection-color;
+}
+
+::-moz-selection {
+	background: $selection-color;
+}
+
+a {
+	opacity: 0.8;
+	color: white;
+	transition: color 1s ease;
+	text-decoration: none;
+	
+	&:hover {
+		opacity: 1;
+		color: $charm-color;
+		text-decoration: underline;
+	}
+}
+
+.monarch-header {
+	$logo-padding: 0.5rem;
+	@include slice();
+	background: #222;
+	padding: $slicepadding - $logo-padding;
+	display: flex;
+	
+	@media (max-width: $smallpoint) {
+		flex-direction: column;
+	}
+
+	h1 {
+		margin: auto;
+		flex: 0 0 auto;
+		display: flex;
+		font-family: "Russo One", sans-serif;
+		color: white;
+		text-transform: uppercase;
+		font-weight: normal;
+		cursor: default;
+		
+		span {
+			padding: $logo-padding;
+	
+			&:nth-child(1) {
+				background: black;
+				color: $charm-color;
+			}
+			
+			&:nth-child(2) {
+				background: #555;
+			}
+		}
+	}
+	
+	nav {
+		margin: auto;
+		flex: 1 1 auto;
+		display: flex;
+		justify-content: flex-end;
+		font-family: Khand, sans-serif;
+		text-transform: lowercase;
+		
+		a {
+			padding: 0.6em;
+
+			&:last-child {
+				padding-right: 0;
+			}
+			
+			&[data-marked="true"] {
+				color: white !important;
+				opacity: 0.6 !important;
+				text-decoration: none !important;
+			}
+		}
+	}
+}
+
+main {
+	@include slice();
+	color: white;
+	background: #444;
+	padding-bottom: 4em;
+
+	h1, h2, h3, h4, h5, h6 {
+		font-family: "Russo One", sans-serif;
+		font-weight: normal;
+	}
+}
+
+.content {
+	font-family: "Maven Pro", sans-serif;
+
+	h1, h2, h3, h4, h5, h6 {
+		margin-top: 1.5em;
+	}
+
+	p, ul, ol, li, div {
+		margin-top: 0.67em;
+	}
+	
+	ul, ol {
+		margin-left: 1.2em;
+	}
+	
+	> *:first-child {
+		margin-top: 0;
+	}
+
+	a {
+		color: #a6d5ff;
+	}
+}
+
+.post {
+	max-width: 900px;
+	margin: auto;
+	padding: $slicepadding;
+	background: rgba(0,0,0, 0.05);
+
+	& + .post {
+		margin-top: 1em;
+	}
+}
+
+.home, .devblog-index {
+	main {
+		padding: $slicepadding;
+		padding-bottom: 4em;
+	}
+}
+
+.devblog-index {
+	.articles {
+
+		a {
+			display: block;
+
+			span:first-child {
+				opacity: 0.5;
+			}
+		}
+	}
+}
+
+.devblog-article {
+	.post {
+		.post-author {
+			color: $charm-color;
+		}
+	}
+}

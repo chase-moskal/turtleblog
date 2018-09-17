@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"rootDir": "source",
+		"outDir": "dist",
+		"target": "es5",
+		"lib": ["es6"],
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"experimentalDecorators": true,
+		"sourceMap": true,
+		"declaration": true
+	},
+	"include": [
+		"source/**/*",
+		"types-custom/**/*"
+	],
+	"exclude": [
+		"source/_archive/**/*"
+	]
+}
