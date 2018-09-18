@@ -7,14 +7,15 @@ import {turtleBuildBlog} from "./turtle-build-blog"
 dieOnError()
 
 commander
-	.command("turtleblog [--source <source>] [--dist <dist>] [--blog <blog>]")
-	.option("-s, --source", "website source code directory", null, "source")
-	.option("-d, --dist", "build output directory", null, "dist")
-	.option("-b, --blog", "name of the blog", null, "blog")
+	.option("-s, --source [dir]", "website source code directory", "source")
+	.option("-d, --dist [dir]", "build output directory", "dist")
+	.option("-b, --blog [name]", "name of the blog", "blog")
 	.parse(process.argv)
 
-turtleBuildBlog({
+const options = {
 	source: commander.source,
 	dist: commander.dist,
 	blog: commander.blog
-})
+}
+
+turtleBuildBlog(options)

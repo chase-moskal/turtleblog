@@ -13,7 +13,7 @@ export async function turtleBuildBlog({
 	blog = "blog"
 }: Partial<TurtleBlogOptions>): Promise<void> {
 
-	const pages = await loadPages({source, dist})
+	const pages = await loadPages({source})
 	const blogPosts = await loadBlogPosts({source, dist, blog})
 
 	await Promise.all([

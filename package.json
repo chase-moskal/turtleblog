@@ -13,18 +13,20 @@
 	],
 	"scripts": {
 		"prepare": "run-s build test",
-		"build": "run-s build-barrel build-scripts build-demo",
+		"build": "run-s build-clean build-barrel build-scripts build-demo",
 		"build:debug": "run-s build",
-		"build-clean": "rimraf dist && mkdirp dist",
+		"build-clean": "rimraf dist dist-demo && mkdirp dist dist-demo",
 		"build-barrel": "barrelsby --directory source --delete && sed -i -e 's/;$//' source/index.ts",
 		"build-scripts": "tsc",
-		"build-demo": "exit 0",
+		"build-demo": "node ./dist/turtleblog-cli --source source-demo --dist dist-demo",
 		"test": "exit 0",
 		"start": "http-server dist-demo",
 		"deploy": "bash deploy gh-pages"
 	},
 	"devDependencies": {
 		"@types/node": "10.9.4",
+		"@types/pug": "2.0.4",
+		"@types/shelljs": "0.8.0",
 		"barrelsby": "1.0.2",
 		"browserify": "16.2.2",
 		"envify": "4.1.0",
