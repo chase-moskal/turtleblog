@@ -2,15 +2,12 @@
 include _mixins
 
 doctype html
-html.home
+html(class=`page ${page.label}`)
 
 head
-	+heady("monarch games")
-	link(rel="stylesheet" href="./style.css")
+	+head(`turtleblog - ${page.label}`)
+	link(rel="stylesheet" href="/style.css")
 
 body
-	+monarch-header("home")
-
-	main.content
-		h1 open source game development team
-		p check out the new #[a(href="devblog") devblog]
+	+header(page.label, pages)
+	main.content !{content}

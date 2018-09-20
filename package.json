@@ -13,11 +13,12 @@
 	],
 	"scripts": {
 		"prepare": "run-s build test",
-		"build": "run-s build-clean build-barrel build-scripts build-demo",
+		"build": "run-s build-clean build-barrel && run-p build-scripts build-styles && run-s build-demo",
 		"build:debug": "run-s build",
 		"build-clean": "rimraf dist dist-demo && mkdirp dist dist-demo",
 		"build-barrel": "barrelsby --directory source --delete && sed -i -e 's/;$//' source/index.ts",
 		"build-scripts": "tsc",
+		"build-styles": "sass --source-map source-demo/style.scss dist-demo/style.css",
 		"build-demo": "node ./dist/turtleblog-cli --source source-demo --dist dist-demo",
 		"test": "exit 0",
 		"start": "http-server dist-demo",

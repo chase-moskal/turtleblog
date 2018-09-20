@@ -1,0 +1,18 @@
+
+include _mixins
+
+doctype html
+html.blog-post
+
+head
+	+head(`turtleblog - ${postTitle}`)
+	link(rel="stylesheet" href="/style.css")
+
+body
+	+header(blog, pages)
+
+	main.content
+		each postSection in postSections
+			section.post-section(data-author=postSection.author)
+				div.post-section-author= postSection.author
+				div.post-section-content !{postSection.markdownContent}

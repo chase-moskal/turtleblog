@@ -41,7 +41,7 @@ a {
 	}
 }
 
-.monarch-header {
+.header {
 	$logo-padding: 0.5rem;
 	@include slice();
 	background: #222;
@@ -147,14 +147,14 @@ main {
 	}
 }
 
-.home, .devblog-index {
+.page, .blog-index {
 	main {
 		padding: $slicepadding;
 		padding-bottom: 4em;
 	}
 }
 
-.devblog-index {
+.blog-index {
 	.articles {
 
 		a {
@@ -167,9 +167,9 @@ main {
 	}
 }
 
-.devblog-article {
-	.post {
-		.post-author {
+.blog-post {
+	.post-section {
+		.post-section-author {
 			color: $charm-color;
 		}
 	}

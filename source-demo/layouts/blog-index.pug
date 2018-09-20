@@ -1,21 +1,21 @@
 
-include ../layout
+include _mixins
 
 doctype html
-html.devblog-index
+html.blog-index
 
 head
-	+heady("monarch devblog")
-	link(rel="stylesheet" href="../style.css")
+	+head(`turtleblog`)
+	link(rel="stylesheet" href="/style.css")
 
 body
-	+monarch-header("devblog")
+	+header(blog, pages)
 
 	main.content
-		.articles
-			each article in allArticles
-				a(href=article.link)
-					span= article.date
+		.posts
+			each post in blogPosts
+				a(href=post.link)
+					span= post.date
 					|
 					|
-					span= article.title
+					span= post.title

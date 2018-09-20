@@ -1,20 +1,22 @@
 
 import {TurtleOptions, TurtleBlogOptions} from "../interfaces"
 
-export interface Resource {
-	name: string
+export interface BlogPost {
 	link: string
-}
-
-export interface BlogPost extends Resource{
+	name: string
 	author: string
 }
 
-export interface GeneratePagesOptions extends TurtleOptions {
-	pages: string[]
+export interface Page {
+	link: string
+	name: string
+	label: string
 }
 
-export interface GenerateBlogOptions extends TurtleBlogOptions {
-	pages: string[]
+export interface GeneratePagesOptions extends TurtleOptions {
+	pages: Page[]
+}
+
+export interface GenerateBlogOptions extends GeneratePagesOptions, TurtleBlogOptions {
 	blogPosts: BlogPost[]
 }

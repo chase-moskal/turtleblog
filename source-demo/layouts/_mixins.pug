@@ -1,23 +1,17 @@
 
-mixin heady(pageTitle)
+mixin head(pageTitle)
 	meta(charset="utf-8")
 	title= pageTitle
 	block
 
-- const monarchHeaderLinks = []
-- monarchHeaderLinks.push({label: "Home", url: "https://monarch-games.com"})
-- monarchHeaderLinks.push({label: "Devblog", url: "https://monarch-games.com/devblog"})
-- monarchHeaderLinks.push({label: "Engine", url: "https://engine.monarch-games.com"})
-- monarchHeaderLinks.push({label: "Nanoshooter", url: "https://nanoshooter.monarch-games.com"})
-
-mixin monarch-header(marked="")
-	header.monarch-header
+mixin header(label, pages)
+	header.header
 		h1
-			span Monarch
-			span Games
+			span Turtle
+			span Blog
 		nav
-			each link in monarchHeaderLinks
-				if link.label.toLowerCase() === marked.toLowerCase()
-					a(href=link.url data-marked="true")= link.label
+			each page in pages
+				if page.label.toLowerCase() === label.toLowerCase()
+					a(href=page.link data-marked="true")= page.label
 				else
-					a(href=link.url data-marked="false")= link.label
+					a(href=page.link data-marked="false")= page.label
