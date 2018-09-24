@@ -2,12 +2,16 @@
 include _mixins
 
 doctype html
-html(class=`page ${page.label}`)
+html(class=`page ${name}`)
 
 head
-	+head(`turtleblog - ${page.label}`)
+	+head(`turtleblog - ${title}`)
 	link(rel="stylesheet" href="/style.css")
 
 body
-	+header(page.label, pages)
-	main.content !{content}
+	+header(name, pages)
+	main.content
+		each section in sections
+			section.section(data-name=section.name)
+				div.section-name= section.name
+				div.section-content !{section.html}

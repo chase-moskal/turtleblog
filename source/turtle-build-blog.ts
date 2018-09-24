@@ -1,28 +1,33 @@
 
 import {TurtleBuildBlogOptions} from "./interfaces"
-
-import {loadPages} from "./turtle/load-pages"
-import {generatePages} from "./turtle/generate-pages"
-import {loadBlogPosts} from "./turtle/load-blog-posts"
-import {generateBlogIndex} from "./turtle/generate-blog-index"
-import {generateBlogPosts} from "./turtle/generate-blog-posts"
+import {generatePage} from "./turtle/generate-page"
+import {listDirectories} from "./files/list-directories"
+import {loadBlogDirectories} from "./turtle/load-blog-directories"
 
 export async function turtleBuildBlog({
 	source = "source",
 	dist = "dist",
 	blog = "blog",
-	pageLabeler = page => page === "index" ? "home" : page,
-	pageLinker = page => page === "index" ? "/" : `/${page}/`
+	pageTitler = page => page.replace(/-/g, " "),
+	pageLinker = page => page === "index" ? "/" : `/${page}/`,
+	pageIsIndex = page => page === "home"
 }: Partial<TurtleBuildBlogOptions>): Promise<void> {
 
-	const [pages, blogPosts] = await Promise.all([
-		await loadPages({source, pageLabeler, pageLinker}),
-		await loadBlogPosts({source, dist, blog})
-	])
+	const pageDirectories = await listDirectories(`${source}/pages`)
+	const blogDirectories = await loadBlogDirectories({source, blog})
+	const pages = []
 
-	await Promise.all([
-		generatePages({source, dist, pages}),
-		generateBlogIndex({source, dist, pages, blog, blogPosts}),
-		generateBlogPosts({source, dist, pages, blog, blogPosts})
-	])
+	console.log("PAGE DIRS", pageDirectories)
+
+	for (const pageDirectory of pageDirectories) {
+		generatePage({
+			source: `${source}/pages`,
+			dist: `${dist}`,
+			name: pageDirectory,
+			title: pageTitler(pageDirectory),
+			standardLayoutPath: `${source}/layouts/page.pug`,
+			locals: {pages},
+			isIndex: pageDirectory === "home"
+		})
+	}
 }

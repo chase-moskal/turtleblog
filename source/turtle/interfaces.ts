@@ -1,22 +1,24 @@
 
-import {TurtleOptions, TurtleBlogOptions} from "../interfaces"
+export interface GeneratePageOptions {
 
-export interface BlogPost {
-	link: string
+	/** Destination folder in which page directories are written */
+	dist: string
+
+	/** Name of the page for use in the url */
 	name: string
-	author: string
-}
 
-export interface Page {
-	link: string
-	name: string
-	label: string
-}
+	/** Name of the page for use in the title */
+	title: string
 
-export interface GeneratePagesOptions extends TurtleOptions {
-	pages: Page[]
-}
+	/** Source folder from which page directories are read */
+	source: string
 
-export interface GenerateBlogOptions extends GeneratePagesOptions, TurtleBlogOptions {
-	blogPosts: BlogPost[]
+	/** Mark this page as a homepage to be saved as an index file */
+	isIndex: boolean
+
+	/** Path to the fallback layout file */
+	standardLayoutPath: string
+
+	/** Additional data to pass to the layout */
+	locals?: any
 }

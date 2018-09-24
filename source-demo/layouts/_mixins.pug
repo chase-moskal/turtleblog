@@ -4,14 +4,14 @@ mixin head(pageTitle)
 	title= pageTitle
 	block
 
-mixin header(label, pages)
+mixin header(name, pages)
 	header.header
 		h1
 			span Turtle
 			span Blog
 		nav
 			each page in pages
-				if page.label.toLowerCase() === label.toLowerCase()
-					a(href=page.link data-marked="true")= page.label
+				if page.name.toLowerCase() === name.toLowerCase()
+					a(href=page.link data-marked="true")= page.name
 				else
-					a(href=page.link data-marked="false")= page.label
+					a(href=page.link data-marked="false")= page.name

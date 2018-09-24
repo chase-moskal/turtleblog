@@ -24,18 +24,34 @@ Expected file structure
 			blog-post.pug
 
 		pages/
-			index.md
+			index.md # home page
 			[page-url].md # top-level pages
 			[page-url].md
+
+			[page-url-and-title]/
+				layout.pug # overrides layout
+				1-[section-name].md
+				2-[section-name].md
+				attachment.zip
+				picture.zip
+
 			blog/
 				index.md
 				[year]/
 					[month]/
 						[day]/
-							[page-url-and-title]/
-								1-[author].md
+
+							[post-url-and-title]/
+								1-[author].md # post section markdowns are provided
 								2-[author].md
-								attachment.zip # additional files
+								attachment.zip # any additional files are copied
+								picture.jpg
+
+							[post-url-and-title]/
+								blog-post.pug # overrides layout
+								1-[author].md # post section markdowns are provided
+								2-[author].md
+								attachment.zip # any additional files are copied
 								picture.jpg
 
 */
