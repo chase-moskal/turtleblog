@@ -1,8 +1,27 @@
 
-import * as uuid from "uuid/v4"
+import * as pug from "pug"
+import * as glob from "fast-glob"
+import * as shortid from "shortid"
+
+import {readFile} from "./files/fsc"
 import {TurtleReader} from "./interfaces"
 
+const generateId = () => shortid.generate()
+
 export const turtleRead: TurtleReader = async({source}) => {
+
+	// prepare pug layouts
+	const renderPage = pug.compileFile(`${source}/layouts/page.pug`)
+	const blogIndex = pug.compileFile(`${source}/layouts/blog-index.pug`)
+	const blogPost = pug.compileFile(`${source}/layouts/blog-post.pug`)
+
+	// prepare pages
+
+	// prepare blog posts
+
+	// prepare blog index
+
+	// prepare navigation
 
 	return {
 		navigation: [
