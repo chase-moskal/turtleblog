@@ -1,12 +1,14 @@
 {
 	"name": "turtleblog",
-	"version": "0.0.0-dev.0",
-	"description": "simple tool to generate a basic blog",
+	"version": "0.0.0-dev.1",
+	"description": "simple blog generator",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"license": "UNLICENSED",
 	"main": "dist",
 	"bin": {
-		"turtleblog": "dist/turtleblog-cli.js"
+		"turtle-read": "dist/cli/turtle-read.js",
+		"turtle-transform-test": "dist/cli/turtle-transform-test.js",
+		"turtle-write": "dist/cli/turtle-write.js"
 	},
 	"files": [
 		"dist"
@@ -19,10 +21,10 @@
 		"build-barrel": "barrelsby --directory source --delete && sed -i -e 's/;$//' source/index.ts",
 		"build-scripts": "tsc",
 		"build-styles": "sass --source-map source-demo/style.scss dist-demo/style.css",
-		"build-demo": "node ./dist/turtleblog-cli --source source-demo --dist dist-demo",
+		"build-demo": "node dist/cli/turtle-read --source source-demo | node dist/cli/turtle-write --dist dist-demo",
 		"test": "exit 0",
 		"start": "http-server dist-demo",
-		"deploy": "bash deploy gh-pages"
+		"deploy": "bash deploy dist-demo gh-pages"
 	},
 	"devDependencies": {
 		"@types/node": "10.9.4",
@@ -47,6 +49,8 @@
 		"uglifyify": "5.0.1"
 	},
 	"dependencies": {
-		"commander": "2.18.0"
+		"commander": "2.18.0",
+		"get-stdin": "6.0.0",
+		"uuid": "3.3.2"
 	}
 }
