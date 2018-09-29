@@ -7,6 +7,7 @@ export type Id = string
 export interface WebsiteMetadata {
 	source: string
 	blog: string
+	home: string
 	pages: PageMetadata[]
 	articles: ArticleMetadata[]
 	blogPosts: BlogPostMetadata[]
@@ -51,6 +52,7 @@ export interface WebsiteOutput {
 
 export interface PageOutput {
 	id: Id
+	name: string
 	path: string
 	content: string
 	files: FileCopyOutput[]
@@ -79,6 +81,7 @@ export interface NavigationLinkOutput extends PageReferenceOutput {}
 export interface TurtleReadOptions {
 	source: string
 	blog: string
+	home: string
 }
 
 export interface TurtleGenerateOptions {

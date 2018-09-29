@@ -14,9 +14,13 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 			const pageMetadata = websiteMetadata.pages.find(
 				page => page.id === articleMetadata.pageId
 			)
+			const isHome = pageMetadata.name === websiteMetadata.home
 			return {
 				id: pageMetadata.id,
-				path: `${pageMetadata.name}/index.html`,
+				name: pageMetadata.name,
+				path: isHome
+					? `index.html`
+					: `${pageMetadata.name}/index.html`,
 				content: renderPage({
 					pageMetadata,
 					websiteMetadata,
@@ -34,6 +38,7 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 			)
 			return {
 				id: pageMetadata.id,
+				name: pageMetadata.name,
 				path: `blog/${blogPostMetadata.date}/${pageMetadata.name}/index.html`,
 				content: renderBlogPost({
 					pageMetadata,
@@ -51,6 +56,7 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 
 	const blogIndex: PageOutput = {
 		id: blogIndexPage.id,
+		name: blogIndexPage.name,
 		path: `blog/index.html`,
 		content: renderBlogIndex({
 			pageMetadata: blogIndexPage,

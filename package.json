@@ -1,6 +1,6 @@
 {
 	"name": "turtleblog",
-	"version": "0.0.0-dev.3",
+	"version": "0.0.0-dev.5",
 	"description": "simple blog generator",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"license": "UNLICENSED",
@@ -20,15 +20,19 @@
 		"build": "run-s build-clean build-barrel && run-p build-scripts build-styles && run-s build-demo",
 		"build:debug": "run-s build",
 		"build-clean": "rimraf dist dist-demo && mkdirp dist dist-demo",
-		"build-barrel": "barrelsby --directory source --delete && sed -i -e 's/;$//' source/index.ts",
+		"build-barrel": "barrelsby --exclude \"\\.test\\.ts\" --directory source --delete && sed -i -e 's/;$//' source/index.ts",
 		"build-scripts": "tsc",
 		"build-styles": "sass --source-map source-demo/style.scss dist-demo/style.css",
 		"build-demo": "node dist/cli/turtle-read --source source-demo | node dist/cli/turtle-generate | node dist/cli/turtle-write --dist dist-demo",
-		"test": "exit 0",
+		"test": "jest --coverage",
 		"start": "http-server dist-demo",
 		"deploy": "bash deploy dist-demo gh-pages"
 	},
+	"jest": {
+		"verbose": true
+	},
 	"devDependencies": {
+		"@types/jest": "23.3.2",
 		"@types/node": "10.9.4",
 		"@types/pug": "2.0.4",
 		"@types/shelljs": "0.8.0",
@@ -39,6 +43,7 @@
 		"envify": "4.1.0",
 		"fast-glob": "2.2.2",
 		"http-server": "0.11.1",
+		"jest": "23.6.0",
 		"jstransformer-markdown-it": "2.1.0",
 		"markdown-it": "8.4.2",
 		"mkdirp": "0.5.1",
