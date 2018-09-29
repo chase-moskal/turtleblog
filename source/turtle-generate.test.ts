@@ -16,7 +16,7 @@ describe("turtle-generate", () => {
 		expect(websiteOutput.pages.length).toBeGreaterThanOrEqual(3)
 
 		const homePage = websiteOutput.pages.find(
-			page => /^home$/i.test(page.name)
+			page => page.id === websiteMetadata.homeId
 		)
 
 		expect(homePage.content).toMatch(/\<h1\>/ig)

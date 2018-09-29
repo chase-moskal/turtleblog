@@ -1,13 +1,17 @@
 
 export type Id = string
 
-////////
-////////
+//
+// WEBSITE METADATA
+// - data about website source material
+// - is the result of turtle-read function
+// - is the input for turtle-generate function
+//
 
 export interface WebsiteMetadata {
 	source: string
 	blog: string
-	home: string
+	homeId: string
 	pages: PageMetadata[]
 	articles: ArticleMetadata[]
 	blogPosts: BlogPostMetadata[]
@@ -43,8 +47,12 @@ export interface BlogPostMetadata extends PageReferenceMetadata {
 
 export interface BlogIndexMetadata extends PageReferenceMetadata {}
 
-////////
-////////
+//
+// WEBSITE OUTPUT
+// - final json output for website contents to be written to disk
+// - is the result of turtle-generate function
+// - is the input for turtle-write function
+//
 
 export interface WebsiteOutput {
 	pages: PageOutput[]
@@ -75,8 +83,28 @@ export interface BlogPostOutput extends PageReferenceOutput {
 
 export interface NavigationLinkOutput extends PageReferenceOutput {}
 
-////////
-////////
+//
+// TURTLE FUNCTION SIGNATURES
+// - signature for each major function
+// - interfaces for the options too
+//
+
+export type TurtleReader = (options: TurtleReadOptions) =>
+	Promise<WebsiteMetadata>
+
+export type TurtleGenerator = (options: TurtleGenerateOptions) =>
+	Promise<WebsiteOutput>
+
+export type TurtleMetadataTransformer =
+	(options: TurtleMetadataTransformOptions) =>
+		Promise<WebsiteMetadata>
+
+export type TurtleOutputTransformer =
+	(options: TurtleOutputTransformOptions) =>
+		Promise<WebsiteOutput>
+
+export type TurtleWriter = (options: TurtleWriteOptions) =>
+		Promise<void>
 
 export interface TurtleReadOptions {
 	source: string
@@ -100,20 +128,3 @@ export interface TurtleWriteOptions {
 	dist: string
 	websiteOutput: WebsiteOutput
 }
-
-export type TurtleReader = (options: TurtleReadOptions) =>
-	Promise<WebsiteMetadata>
-
-export type TurtleGenerator = (options: TurtleGenerateOptions) =>
-	Promise<WebsiteOutput>
-
-export type TurtleMetadataTransformer =
-	(options: TurtleMetadataTransformOptions) =>
-		Promise<WebsiteMetadata>
-
-export type TurtleOutputTransformer =
-	(options: TurtleOutputTransformOptions) =>
-		Promise<WebsiteOutput>
-
-export type TurtleWriter = (options: TurtleWriteOptions) =>
-		Promise<void>

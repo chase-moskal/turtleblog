@@ -14,7 +14,7 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 			const pageMetadata = websiteMetadata.pages.find(
 				page => page.id === articleMetadata.pageId
 			)
-			const isHome = pageMetadata.name === websiteMetadata.home
+			const isHome = pageMetadata.id === websiteMetadata.homeId
 			return {
 				id: pageMetadata.id,
 				name: pageMetadata.name,

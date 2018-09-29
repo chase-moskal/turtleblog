@@ -38,7 +38,7 @@ export const turtleRead: TurtleReader = async({source, blog, home}) => {
 	return {
 		source,
 		blog,
-		home,
+		homeId: articlePageMetadata.find(p => p.name === home).id,
 		pages: [
 			...articlePageMetadata,
 			...blogPostPageMetadata,
