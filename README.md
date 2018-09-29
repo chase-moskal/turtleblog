@@ -17,8 +17,8 @@
 # turtleblog tools pipe together
 
 turtle-read | turtle-generate | turtle-write
-#           ^                 ^
-#     {metadata json}    {output json}
+ #          ^                 ^
+ #    {metadata json}    {output json}
 
 # there are two points where the tools pass json data,
 # easy opportunity to transform that json yourself
@@ -43,7 +43,7 @@ turtle-read --source src           # load website source
 ### turtleblog via node
 
 ```js
-import {turtleRead, turtleTransformPass, turtleWrite} from "turtleblog"
+import {turtleRead, turtleGenerate, turtleWrite} from "turtleblog"
 
 async function main() {
 

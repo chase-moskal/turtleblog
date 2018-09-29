@@ -102,11 +102,13 @@ export type TurtleReader = (options: TurtleReadOptions) =>
 export type TurtleGenerator = (options: TurtleGenerateOptions) =>
 	Promise<WebsiteOutput>
 
-export type TurtleMetadataTransformer = (options: TurtleMetadataTransformOptions) =>
-	Promise<WebsiteMetadata>
+export type TurtleMetadataTransformer =
+	(options: TurtleMetadataTransformOptions) =>
+		Promise<WebsiteMetadata>
 
-export type TurtleOutputTransformer = (options: TurtleOutputTransformOptions) =>
-	Promise<WebsiteOutput>
+export type TurtleOutputTransformer =
+	(options: TurtleOutputTransformOptions) =>
+		Promise<WebsiteOutput>
 
 export type TurtleWriter = (options: TurtleWriteOptions) =>
-	Promise<void>
+		Promise<void>
