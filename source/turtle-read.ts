@@ -17,7 +17,7 @@ const generateId = () => shortid.generate()
 const markdownIt = new MarkdownIt({html: true})
 const nameToTitle = (name: string) => name.replace(/-/g, " ")
 
-export const turtleRead: TurtleReader = async({source}) => {
+export const turtleRead: TurtleReader = async({source, blog}) => {
 	const pageDirectories = await listDirectories(`${source}/pages`)
 	const articlePageMetadata: PageMetadata[] = await Promise.all(
 		pageDirectories.map(
@@ -27,9 +27,9 @@ export const turtleRead: TurtleReader = async({source}) => {
 	const blogPostPageMetadata: PageMetadata[] = []
 	const blogIndexMetadata: PageMetadata = {
 		id: generateId(),
-		name: "blog",
-		title: "blog",
-		link: "/blog",
+		name: blog,
+		title: nameToTitle(blog),
+		link: `/${blog}`,
 		sections: []
 	}
 
@@ -37,6 +37,7 @@ export const turtleRead: TurtleReader = async({source}) => {
 
 	return {
 		source,
+		blog,
 		pages: [
 			...articlePageMetadata,
 			...blogPostPageMetadata,

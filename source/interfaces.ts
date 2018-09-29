@@ -6,6 +6,7 @@ export type Id = string
 
 export interface WebsiteMetadata {
 	source: string
+	blog: string
 	pages: PageMetadata[]
 	articles: ArticleMetadata[]
 	blogPosts: BlogPostMetadata[]
@@ -77,6 +78,7 @@ export interface NavigationLinkOutput extends PageReferenceOutput {}
 
 export interface TurtleReadOptions {
 	source: string
+	blog: string
 }
 
 export interface TurtleGenerateOptions {

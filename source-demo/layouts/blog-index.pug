@@ -2,20 +2,21 @@
 include _mixins
 
 doctype html
-html.blog-index
+html(class=`page blog-index ${pageMetadata.name}`)
 
 head
 	+head(`turtleblog`)
 	link(rel="stylesheet" href="/style.css")
 
 body
-	+header(blog, pages)
+	//- +header(blog, pages)
 
 	main.content
 		.posts
-			each post in blogPosts
-				a(href=post.link)
+			each post in websiteMetadata.blogPosts
+				- var blogPage = websiteMetadata.pages.find(p => p.id === post.pageId)
+				a(href=blogPage.link)
 					span= post.date
 					|
 					|
-					span= post.title
+					span= blogPage.title

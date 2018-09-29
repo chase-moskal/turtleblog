@@ -2,14 +2,14 @@
 include _mixins
 
 doctype html
-html.blog-post
+html(class=`page blog-post ${pageMetadata.name}`)
 
 head
-	+head(`turtleblog - ${postTitle}`)
+	+head(`turtleblog - ${pageMetadata.title}`)
 	link(rel="stylesheet" href="/style.css")
 
 body
-	+header(blog, pages)
+	//- +header(blog, pages)
 
 	main.content
 		each postSection in postSections

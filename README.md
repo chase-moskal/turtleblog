@@ -97,3 +97,18 @@ turtleblog exposes its typescript interfaces, so you extend turtleblog and make 
 of course, you could wholly replace turtle-read, if you wanted to have control over your directory structure
 
 also note you could wholly replace turtle-generate, for control over the compilation process
+
+### pug locals
+
+- all pages
+	- `pageMetadata`
+	- `websiteMetadata`
+
+- articles
+	- `articleMetadata`
+
+- blog posts
+	- `blogPostMetadata`
+
+- blog index
+	- `blogIndexMetadata`

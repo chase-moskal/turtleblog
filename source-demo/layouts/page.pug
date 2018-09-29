@@ -2,16 +2,17 @@
 include _mixins
 
 doctype html
-html(class=`page ${name}`)
+html(class=`page article ${pageMetadata.name}`)
 
 head
-	+head(`turtleblog - ${title}`)
+	+head(`turtleblog - ${pageMetadata.title}`)
 	link(rel="stylesheet" href="/style.css")
 
 body
-	+header(name, pages)
+	//- +header(name, pages)
+
 	main.content
-		each section in sections
+		each section in pageMetadata.sections
 			section.section(data-name=section.name)
 				div.section-name= section.name
-				div.section-content !{section.html}
+				div.section-content !{section.content}
