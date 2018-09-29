@@ -4,7 +4,7 @@ import * as getStdin from "get-stdin"
 import * as commander from "commander"
 
 import {turtleWrite} from "../turtle-write"
-import {dieOnError} from "../util/die-on-error"
+import {dieOnError} from "../toolbox/die-on-error"
 
 dieOnError()
 

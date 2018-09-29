@@ -3,7 +3,7 @@
 import * as commander from "commander"
 
 import {turtleRead} from "../turtle-read"
-import {dieOnError} from "../util/die-on-error"
+import {dieOnError} from "../toolbox/die-on-error"
 
 dieOnError()
 

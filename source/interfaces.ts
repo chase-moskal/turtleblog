@@ -12,8 +12,19 @@ export interface Page {
 	name: string
 	title: string
 	link: string
-	path: string
 	sections: PageSection[]
+}
+
+export interface CopyFileMandate {
+	sourceFilePath: string
+	distDirPath: string
+}
+
+export interface PageOutput {
+	id: Id
+	path: string
+	content: string
+	files: CopyFileMandate[]
 }
 
 export interface NavigationItem {

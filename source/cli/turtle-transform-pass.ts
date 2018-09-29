@@ -2,7 +2,7 @@
 
 import * as getStdin from "get-stdin"
 
-import {dieOnError} from "../util/die-on-error"
+import {dieOnError} from "../toolbox/die-on-error"
 import {turtleTransformPass} from "../turtle-transform-pass"
 
 dieOnError()
