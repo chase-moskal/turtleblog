@@ -13,8 +13,8 @@ commander
 	.parse(process.argv)
 
 ; (async() => {
-	const stdin = await getStdin()
-	const website = JSON.parse(stdin)
 	const dist = commander.dist
-	await turtleWrite({website, dist})
+	const stdin = await getStdin()
+	const websiteOutput = JSON.parse(stdin)
+	await turtleWrite({websiteOutput, dist})
 })()

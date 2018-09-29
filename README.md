@@ -3,29 +3,41 @@
 
 &nbsp; *simple blog generator*
 
-### turtleblog is made of three simple functions
+### turtleblog is based on three simple functions
 
-1. **`turtle-read`** — read a source directory and generate a website as a json blob
-2. **`turtle-transform-pass`** *(optional)* — add any number of transform plugins
-3. **`turtle-write`** — save the whole website to disk, html and all
+1. **`turtle-read`** — read a source directory, return website metadata json
+2. **`turtle-generate`** — compile pug, sass, and return website output json
+3. **`turtle-write`** — save the website to disk
 
 ### turtleblog via command line
 
 ```bash
 #!/bin/bash
 
-# turtleblog tools are designed to be piped together
+# turtleblog tools pipe together
 
-turtle-read --source src \   # load the website source
-  | turtle-transform-pass \  # add any number of transforms
-  | turtle-write --dist dist # save the website output
+turtle-read | turtle-generate | turtle-write
+#           ^                 ^
+#     {metadata json}    {output json}
 
-# of course the transforms are optional, so you can just do this
+# there are two points where the tools pass json data,
+# easy opportunity to transform that json yourself
 
-turtle-read | turtle-write
+# turtleblog is flexible, so you can tweak arguments and add transformers
+
+turtle-read --source src           # load website source
+  | turtle-transform-metadata-pass # (optional) transform metadata
+  | turtle-generate                # compile pug, sass, etc
+  | turtle-transform-output-pass   # (optional) transform output
+  | turtle-write --dist dist       # write website to disk
+
+# there are two types of transformers you can add
+#  1. metadata transfomers change the json data before compilations occur
+#  2. output transformers change the json before writing to disk
 
 # turtle-read's default source directory is "source"
 # turtle-write's default dist directory is "dist"
+
 ```
 
 ### turtleblog via node
@@ -35,30 +47,18 @@ import {turtleRead, turtleTransformPass, turtleWrite} from "turtleblog"
 
 async function main() {
 
-	// 1. turtle-read the website
-	let website = await turtleRead({source: "src"})
+	// 1. read the website
+	const websiteMetadata = await turtleRead({source: "src"})
 
-	// 2. turtle-transform the website (optional)
-	website = await turtleTransformPass({website})
+	// 2. generate the website
+	const websiteOutput = await turtleGenerate({websiteMetadata})
 
-	// 3. turtle-write the website
-	await turtleWrite({website, dist: "dist"})
+	// 3. write the website
+	await turtleWrite({dist: "dist", websiteOutput})
 }
 ```
 
-### turtleblog out-of-the-box details
-
-- `turtle-write` just writes files to disk, so it's pretty straight forward
-- `turtle-transform-pass` doesn't do anything, it's just a placeholder example
-- `turtle-read` is where the money is, it reads your source directory and decides how to actually generate the website
-	- expects your source directory to adhere to a common structure (to be explained later)
-	- compiles markdown posts
-	- compiles html from pug layouts
-	- compiles sass files
-	- writes navigation and blog meta data
-	- more detailed specifics of `turtle-read` coming soon
-
-### `turtle-read` expected website source directory structure
+### `turtle-read`'s expected website source directory structure
 
 ```
 {source-dir}/
@@ -73,10 +73,9 @@ async function main() {
       {section-name}.md  # sections are passed to pug layouts
       {section-name}.md
       ...{any other files are copied}
-    cool-area/
-      {page-name}/  # standard page directory
-        {section-name}.md
-        {section-name}.md
+    {page-name}/  # standard page directory
+      {section-name}.md
+      {section-name}.md
 
   blog/
     index/  # standard page directory
@@ -93,4 +92,8 @@ async function main() {
 
 ### roll your own turtle
 
-turtleblog exposes its typescript interfaces, so you can extend `TurtleReader`, `TurtleTransformer`, and `TurtleWriter` to make your own replacement tools that interoperate with turtleblog
+turtleblog exposes its typescript interfaces, so you extend turtleblog and make your own interoperable replacement tools
+
+of course, you could wholly replace turtle-read, if you wanted to have control over your directory structure
+
+also note you could wholly replace turtle-generate, for control over the compilation process

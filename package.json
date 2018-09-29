@@ -1,13 +1,15 @@
 {
 	"name": "turtleblog",
-	"version": "0.0.0-dev.1",
+	"version": "0.0.0-dev.2",
 	"description": "simple blog generator",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"license": "UNLICENSED",
 	"main": "dist",
 	"bin": {
 		"turtle-read": "dist/cli/turtle-read.js",
-		"turtle-transform-test": "dist/cli/turtle-transform-test.js",
+		"turtle-transform-metadata-pass": "dist/cli/turtle-transform-metadata-pass.js",
+		"turtle-generate": "dist/cli/turtle-generate.js",
+		"turtle-transform-output-pass": "dist/cli/turtle-transform-output-pass.js",
 		"turtle-write": "dist/cli/turtle-write.js"
 	},
 	"files": [
@@ -21,7 +23,7 @@
 		"build-barrel": "barrelsby --directory source --delete && sed -i -e 's/;$//' source/index.ts",
 		"build-scripts": "tsc",
 		"build-styles": "sass --source-map source-demo/style.scss dist-demo/style.css",
-		"build-demo": "node dist/cli/turtle-read --source source-demo | node dist/cli/turtle-write --dist dist-demo",
+		"build-demo": "node dist/cli/turtle-read --source source-demo | node dist/cli/turtle-generate | node dist/cli/turtle-write --dist dist-demo",
 		"test": "exit 0",
 		"start": "http-server dist-demo",
 		"deploy": "bash deploy dist-demo gh-pages"

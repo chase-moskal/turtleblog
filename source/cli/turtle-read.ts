@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as commander from "commander"
-
 import {turtleRead} from "../turtle-read"
 import {dieOnError} from "../toolbox/die-on-error"
 
@@ -13,7 +12,7 @@ commander
 
 ; (async() => {
 	const source = commander.source
-	const website = await turtleRead({source})
-	const output = JSON.stringify(website)
-	process.stdout.write(output)
+	const websiteMetadata = await turtleRead({source})
+	const stdout = JSON.stringify(websiteMetadata)
+	process.stdout.write(stdout)
 })()

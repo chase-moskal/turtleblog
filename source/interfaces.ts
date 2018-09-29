@@ -1,62 +1,112 @@
 
-export interface PageSection {
+export type Id = string
+
+////////
+////////
+
+export interface WebsiteMetadata {
+	source: string
+	pages: PageMetadata[]
+	articles: ArticleMetadata[]
+	blogPosts: BlogPostMetadata[]
+	blogIndex: BlogIndexMetadata
+	navigation: NavigationLinkMetadata[]
+}
+
+export interface PageMetadata {
+	id: Id
+	name: string
+	title: string
+	link: string
+	sections: PageSectionMetadata[]
+}
+
+export interface PageSectionMetadata {
 	name: string
 	title: string
 	content: string
 }
 
-export type Id = string
-
-export interface Page {
-	id: Id
-	name: string
-	title: string
-	link: string
-	sections: PageSection[]
+export interface PageReferenceMetadata {
+	pageId: Id
 }
 
-export interface CopyFileMandate {
-	sourceFilePath: string
-	distDirPath: string
+export interface ArticleMetadata extends PageReferenceMetadata {}
+
+export interface NavigationLinkMetadata extends PageReferenceMetadata {}
+
+export interface BlogPostMetadata extends PageReferenceMetadata {
+	date: string
+}
+
+export interface BlogIndexMetadata extends PageReferenceMetadata {}
+
+////////
+////////
+
+export interface WebsiteOutput {
+	pages: PageOutput[]
 }
 
 export interface PageOutput {
 	id: Id
 	path: string
 	content: string
-	files: CopyFileMandate[]
+	files: FileCopyOutput[]
 }
 
-export interface NavigationItem {
+export interface FileCopyOutput {
+	sourceFilePath: string
+	distDirPath: string
+}
+
+export interface PageReferenceOutput {
 	pageId: Id
 }
 
-export interface BlogPost {
-	pageId: Id
+export interface ArticleOutput extends PageReferenceOutput {}
+
+export interface BlogPostOutput extends PageReferenceOutput {
 	date: string
 }
 
-export interface Website {
-	pages: Page[]
-	navigation: NavigationItem[]
-	blogPosts: BlogPost[]
-}
+export interface NavigationLinkOutput extends PageReferenceOutput {}
+
+////////
+////////
 
 export interface TurtleReadOptions {
 	source: string
 }
 
-export interface TurtleTransformOptions {
-	website: Website
+export interface TurtleGenerateOptions {
+	websiteMetadata: WebsiteMetadata
+}
+
+export interface TurtleMetadataTransformOptions {
+	websiteMetadata: WebsiteMetadata
+}
+
+export interface TurtleOutputTransformOptions {
+	websiteOutput: WebsiteOutput
 }
 
 export interface TurtleWriteOptions {
 	dist: string
-	website: Website
+	websiteOutput: WebsiteOutput
 }
 
-export type TurtleReader = (options: TurtleReadOptions) => Promise<Website>
+export type TurtleReader = (options: TurtleReadOptions) =>
+	Promise<WebsiteMetadata>
 
-export type TurtleTransformer = (options: TurtleTransformOptions) => Promise<Website>
+export type TurtleGenerator = (options: TurtleGenerateOptions) =>
+	Promise<WebsiteOutput>
 
-export type TurtleWriter = (options: TurtleWriteOptions) => Promise<void>
+export type TurtleMetadataTransformer = (options: TurtleMetadataTransformOptions) =>
+	Promise<WebsiteMetadata>
+
+export type TurtleOutputTransformer = (options: TurtleOutputTransformOptions) =>
+	Promise<WebsiteOutput>
+
+export type TurtleWriter = (options: TurtleWriteOptions) =>
+	Promise<void>

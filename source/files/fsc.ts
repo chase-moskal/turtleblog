@@ -4,5 +4,11 @@
 import * as fs from "fs"
 import {promisify} from "util"
 
-export const readFile = promisify(fs.readFile)
-export const writeFile = promisify(fs.writeFile)
+const readFileAsync = promisify(fs.readFile)
+const writeFileAsync = promisify(fs.writeFile)
+
+export const readFile = (path: string, encoding = "utf8") =>
+	readFileAsync(path, encoding)
+
+export const writeFile = (path: string, encoding = "utf8") =>
+	writeFileAsync(path, encoding)
