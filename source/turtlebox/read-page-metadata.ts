@@ -12,9 +12,17 @@ const markdownIt = new MarkdownIt({html: true})
 const nameToTitle = (name: string) => name.replace(/-/g, " ")
 const renderMarkdown = (markdown: string) => markdownIt.render(markdown)
 
+/**
+ * Read a source page directory and return page metadata
+ */
 export async function readPageMetadata({name, dirPath}: {
-	name: string
-	dirPath: string
+
+		/** Url-safe name of the page */
+		name: string
+
+		/** Source path to the page directory */
+		dirPath: string
+
 }): Promise<PageMetadata> {
 
 	const pageFiles = await listFiles(dirPath)

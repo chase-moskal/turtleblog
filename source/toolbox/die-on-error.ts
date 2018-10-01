@@ -1,4 +1,7 @@
 
+/**
+ * Set the node process to terminate upon any unhandled errors
+ */
 export function dieOnError() {
 
 	process.on("unhandledRejection", (reason, error) => {

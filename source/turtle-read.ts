@@ -9,6 +9,9 @@ import {
 
 const getPageIdFromReference = (page: PageMetadata) => ({pageId: page.id})
 
+/**
+ * Read a turtle website directory and return website metadata
+ */
 export const turtleRead: TurtleReader = async({source, blog, home}) => {
 
 	//

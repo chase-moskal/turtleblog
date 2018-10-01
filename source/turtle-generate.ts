@@ -2,6 +2,9 @@
 import * as pug from "pug"
 import {TurtleGenerator, PageOutput} from "./interfaces"
 
+/**
+ * Generate website output from the provided website metadata
+ */
 export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 	const {source} = websiteMetadata
 

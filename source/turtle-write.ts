@@ -5,6 +5,9 @@ import {mkdir} from "shelljs"
 import {writeFile} from "./files/fsc"
 import {TurtleWriter} from "./interfaces"
 
+/**
+ * Write website output to disk
+ */
 export const turtleWrite: TurtleWriter = async({websiteOutput, dist}) => {
 
 	const writeOperations = websiteOutput.pages.map(
