@@ -1,6 +1,6 @@
 {
 	"name": "turtleblog",
-	"version": "0.0.0-dev.6",
+	"version": "0.0.0-dev.7",
 	"description": "simple blog generator",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"license": "UNLICENSED",

@@ -19,32 +19,29 @@ const nameToTitle = (name: string) => name.replace(/-/g, " ")
 
 export const turtleRead: TurtleReader = async({source, blog, home}) => {
 	const pageDirectories = await listDirectories(`${source}/pages`)
-	const articlePageMetadata: PageMetadata[] = await Promise.all(
+	const articlePagesMetadata: PageMetadata[] = await Promise.all(
 		pageDirectories.map(
 			name => readPageMetadata({name, path: `${source}/pages/${name}`})
 		)
 	)
-	const blogPostPageMetadata: PageMetadata[] = []
-	const blogIndexMetadata: PageMetadata = {
-		id: generateId(),
+	const blogPostPagesMetadata: PageMetadata[] = []
+	const blogIndexMetadata = await readPageMetadata({
 		name: blog,
-		title: nameToTitle(blog),
-		link: `/${blog}`,
-		sections: []
-	}
+		path: `${source}/${blog}`
+	})
 
 	const pageToReference = (page: PageMetadata) => ({pageId: page.id})
 
 	return {
 		source,
 		blog,
-		homeId: articlePageMetadata.find(p => p.name === home).id,
+		homeId: articlePagesMetadata.find(p => p.name === home).id,
 		pages: [
-			...articlePageMetadata,
-			...blogPostPageMetadata,
+			...articlePagesMetadata,
+			...blogPostPagesMetadata,
 			blogIndexMetadata
 		],
-		articles: articlePageMetadata.map(pageToReference),
+		articles: articlePagesMetadata.map(pageToReference),
 		blogPosts: [],
 		blogIndex: pageToReference(blogIndexMetadata),
 		navigation: []
