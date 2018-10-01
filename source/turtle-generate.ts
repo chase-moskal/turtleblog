@@ -5,9 +5,17 @@ import {TurtleGenerator, PageOutput} from "./interfaces"
 export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 	const {source} = websiteMetadata
 
+	//
+	// grab standard pug layouts
+	//
+
 	const renderPage = pug.compileFile(`${source}/layouts/page.pug`)
 	const renderBlogPost = pug.compileFile(`${source}/layouts/blog-post.pug`)
 	const renderBlogIndex = pug.compileFile(`${source}/layouts/blog-index.pug`)
+
+	//
+	// generate article pages
+	//
 
 	const articlePages: PageOutput[] = websiteMetadata.articles.map(
 		articleMetadata => {
@@ -31,6 +39,10 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 		}
 	)
 
+	//
+	// generate blog posts
+	//
+
 	const blogPosts: PageOutput[] = websiteMetadata.blogPosts.map(
 		blogPostMetadata => {
 			const pageMetadata = websiteMetadata.pages.find(
@@ -50,6 +62,10 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 		}
 	)
 
+	//
+	// generate blog index
+	//
+
 	const blogIndexPage = websiteMetadata.pages.find(
 		page => page.id === websiteMetadata.blogIndex.pageId
 	)
@@ -66,7 +82,15 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 		files: []
 	}
 
+	//
+	// return website output
+	//
+
 	return {
-		pages: [...articlePages, ...blogPosts, blogIndex]
+		pages: [
+			...articlePages,
+			...blogPosts,
+			blogIndex
+		]
 	}
 }

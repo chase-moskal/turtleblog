@@ -1,36 +1,45 @@
 
-import * as shortid from "shortid"
-import * as MarkdownIt from "markdown-it"
-
-import {readFile} from "./files/fsc"
-import {regex} from "./toolbox/regex"
-import {listFiles} from "./files/list-files"
 import {listDirectories} from "./files/list-directories"
+import {readPageMetadata} from "./turtlebox/read-page-metadata"
 
 import {
 	PageMetadata,
-	TurtleReader,
-	PageSectionMetadata
+	TurtleReader
 } from "./interfaces"
 
-const generateId = () => shortid.generate()
-const markdownIt = new MarkdownIt({html: true})
-const nameToTitle = (name: string) => name.replace(/-/g, " ")
+const getPageIdFromReference = (page: PageMetadata) => ({pageId: page.id})
 
 export const turtleRead: TurtleReader = async({source, blog, home}) => {
+
+	//
+	// read articles
+	//
+
 	const pageDirectories = await listDirectories(`${source}/pages`)
 	const articlePagesMetadata: PageMetadata[] = await Promise.all(
 		pageDirectories.map(
-			name => readPageMetadata({name, path: `${source}/pages/${name}`})
+			name => readPageMetadata({name, dirPath: `${source}/pages/${name}`})
 		)
 	)
+
+	//
+	// read blog posts
+	//
+
 	const blogPostPagesMetadata: PageMetadata[] = []
+
+	//
+	// read blog index
+	//
+
 	const blogIndexMetadata = await readPageMetadata({
 		name: blog,
-		path: `${source}/${blog}`
+		dirPath: `${source}/${blog}`
 	})
 
-	const pageToReference = (page: PageMetadata) => ({pageId: page.id})
+	//
+	// return website metadata
+	//
 
 	return {
 		source,
@@ -41,36 +50,9 @@ export const turtleRead: TurtleReader = async({source, blog, home}) => {
 			...blogPostPagesMetadata,
 			blogIndexMetadata
 		],
-		articles: articlePagesMetadata.map(pageToReference),
+		articles: articlePagesMetadata.map(getPageIdFromReference),
 		blogPosts: [],
-		blogIndex: pageToReference(blogIndexMetadata),
+		blogIndex: getPageIdFromReference(blogIndexMetadata),
 		navigation: []
-	}
-}
-
-async function readPageMetadata({path, name}: {
-	path: string
-	name: string
-}): Promise<PageMetadata> {
-
-	const pageFiles = await listFiles(path)
-	const markdownFiles = pageFiles.filter(filename => /.+\.md$/i.test(filename))
-
-	const sections: PageSectionMetadata[] = await Promise.all(
-		markdownFiles.map(async (filename): Promise<PageSectionMetadata> => {
-			const name = regex(/^(?:|(\d+)-)(.+)\.md$/i, filename, 2)
-			const title = nameToTitle(name)
-			const markdown = await readFile(`${path}/${filename}`)
-			const content = markdownIt.render(markdown)
-			return {name, title, content}
-		})
-	)
-
-	return {
-		id: generateId(),
-		name: name,
-		title: nameToTitle(name),
-		link: `/${name}`,
-		sections
 	}
 }
