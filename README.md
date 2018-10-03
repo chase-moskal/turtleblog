@@ -3,6 +3,45 @@
 
 &nbsp; *concept blog generator*
 
+here's one way
+
+```
+turtleblog \
+  --source source \
+  --dist dist \
+  --blog devblog
+```
+
+concept walkthrough
+
+- **turtle-scan**: scan website structure, assign ids, make navigation and links
+
+	```
+	interface WebsiteData {
+		articles: PageData[]
+		blog: PageData[]
+		blogIndex: PageData
+		home: PageData
+		navigation: [
+			{
+				label: "devblog"
+			}
+		]
+	}
+	```
+
+- **turtle-generate**: read the files and perform compilations
+
+	```
+	interface WebsiteOutput {
+		articles: PageOutput[]
+	}
+	```
+
+- **turtle-write**: output all results to disk and copy files
+
+--------
+
 ### turtleblog is based on three simple functions
 
 1. **`turtle-read`** — read a source directory, return website metadata json
