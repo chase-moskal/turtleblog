@@ -8,16 +8,22 @@ const getPageIdFromReference = (page: PageMetadata) => ({pageId: page.id})
 /**
  * Read a turtle website directory and return website metadata
  */
-export const turtleRead: TurtleReader = async({source, blog, home}) => {
+export const turtleRead: TurtleReader = async({source}) => {
+
+	//
+	// read home page
+	//
+
+	const [homeMetadata] = await readPages(source, [`home`])
 
 	//
 	// read articles
 	//
 
-	const pageDirectories = (await listDirectories(`${source}/pages`, true))
-		.map(pageDirectoryPath => `pages/${pageDirectoryPath}`)
+	const articleDirectories = (await listDirectories(`${source}/articles`, true))
+		.map(pageDirectoryPath => `articles/${pageDirectoryPath}`)
 
-	const articlePagesMetadata = await readPages(source, pageDirectories)
+	const articlePagesMetadata = await readPages(source, articleDirectories)
 
 	//
 	// read blog posts
@@ -29,7 +35,7 @@ export const turtleRead: TurtleReader = async({source, blog, home}) => {
 	// read blog index
 	//
 
-	const [blogIndexMetadata] = await readPages(source, [blog])
+	const [blogIndexMetadata] = await readPages(source, [`blog-index`])
 
 	//
 	// prepare and return website metadata
@@ -37,16 +43,16 @@ export const turtleRead: TurtleReader = async({source, blog, home}) => {
 
 	return {
 		source,
-		blog,
-		homeId: articlePagesMetadata.find(p => p.name === home).id,
 		pages: [
+			homeMetadata,
 			...articlePagesMetadata,
 			...blogPostPagesMetadata,
 			blogIndexMetadata
 		],
-		articles: articlePagesMetadata.map(getPageIdFromReference),
-		blogPosts: [],
-		blogIndex: getPageIdFromReference(blogIndexMetadata),
-		navigation: []
+		homeReference: {pageId: homeMetadata.id},
+		articleReferences: articlePagesMetadata.map(getPageIdFromReference),
+		blogPostReferences: [],
+		blogIndexReference: getPageIdFromReference(blogIndexMetadata),
+		navigationLinkReferences: []
 	}
 }

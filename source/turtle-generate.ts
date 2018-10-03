@@ -8,7 +8,7 @@ import {TurtleGenerator, PageOutput} from "./interfaces"
 /**
  * Generate website output from the provided website metadata
  */
-export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
+export const turtleGenerate: TurtleGenerator = async({websiteMetadata, blog, home}) => {
 	const {source} = websiteMetadata
 
 	//
@@ -29,22 +29,37 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 	])
 
 	//
-	// generate article pages
+	// generate home page
 	//
 
-	const articlePages: PageOutput[] = websiteMetadata.articles.map(
+	const homeMetadata = websiteMetadata.pages.find(
+		page => page.id === websiteMetadata.homeReference.pageId
+	)
+
+	const homePage: PageOutput = {
+		id: homeMetadata.id,
+		name: homeMetadata.name,
+		distPath: `index.html`,
+		content: renderPage({
+			pageMetadata: homeMetadata,
+			websiteMetadata
+		})
+	}
+
+	//
+	// generate articles
+	//
+
+	const articlePages: PageOutput[] = websiteMetadata.articleReferences.map(
 		articleMetadata => {
 			const pageMetadata = websiteMetadata.pages.find(
 				page => page.id === articleMetadata.pageId
 			)
-			const isHome = pageMetadata.id === websiteMetadata.homeId
-			const choppedPath = regex(/pages\/(.+)/i, pageMetadata.sourcePath)
+			const choppedPath = regex(/articles\/(.+)/i, pageMetadata.sourcePath)
 			return {
 				id: pageMetadata.id,
 				name: pageMetadata.name,
-				distPath: isHome
-					? `index.html`
-					: `${choppedPath}/index.html`,
+				distPath: `${choppedPath}/index.html`,
 				content: renderPage({
 					pageMetadata,
 					websiteMetadata,
@@ -59,7 +74,7 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 	// generate blog posts
 	//
 
-	const blogPosts: PageOutput[] = websiteMetadata.blogPosts.map(
+	const blogPosts: PageOutput[] = websiteMetadata.blogPostReferences.map(
 		blogPostMetadata => {
 			const pageMetadata = websiteMetadata.pages.find(
 				page => page.id === blogPostMetadata.pageId
@@ -84,7 +99,7 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 	//
 
 	const blogIndexPage = websiteMetadata.pages.find(
-		page => page.id === websiteMetadata.blogIndex.pageId
+		page => page.id === websiteMetadata.blogIndexReference.pageId
 	)
 
 	const blogIndex: PageOutput = {
@@ -94,7 +109,7 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 		content: renderBlogIndex({
 			pageMetadata: blogIndexPage,
 			websiteMetadata,
-			blogIndexMetadata: websiteMetadata.blogIndex
+			blogIndexMetadata: websiteMetadata.blogIndexReference
 		}),
 		files: []
 	}

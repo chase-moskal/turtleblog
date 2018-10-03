@@ -60,7 +60,7 @@ async function readPageDirectory(
 		sourcePath,
 		name,
 		title: nameToTitle(name),
-		link: `/${name}`,
+		link: `/${sourcePath}`,
 		sections
 	}
 }

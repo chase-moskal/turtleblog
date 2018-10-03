@@ -21,13 +21,12 @@ export type Id = string
 
 export interface WebsiteMetadata {
 	source: string
-	blog: string
-	homeId: string
 	pages: PageMetadata[]
-	articles: ArticleMetadata[]
-	blogPosts: BlogPostMetadata[]
-	blogIndex: BlogIndexMetadata
-	navigation: NavigationLinkMetadata[]
+	homeReference: HomeReference
+	articleReferences: ArticleReference[]
+	blogPostReferences: BlogPostReference[]
+	blogIndexReference: BlogIndexReference
+	navigationLinkReferences: NavigationLinkReference[]
 }
 
 export interface PageMetadata {
@@ -49,15 +48,17 @@ export interface PageReferenceMetadata {
 	pageId: Id
 }
 
-export interface ArticleMetadata extends PageReferenceMetadata {}
+export interface HomeReference extends PageReferenceMetadata {}
 
-export interface NavigationLinkMetadata extends PageReferenceMetadata {}
+export interface ArticleReference extends PageReferenceMetadata {}
 
-export interface BlogPostMetadata extends PageReferenceMetadata {
+export interface NavigationLinkReference extends PageReferenceMetadata {}
+
+export interface BlogPostReference extends PageReferenceMetadata {
 	date: string
 }
 
-export interface BlogIndexMetadata extends PageReferenceMetadata {}
+export interface BlogIndexReference extends PageReferenceMetadata {}
 
 //
 // WEBSITE OUTPUT
@@ -120,12 +121,12 @@ export type TurtleWriter = (options: TurtleWriteOptions) =>
 
 export interface TurtleReadOptions {
 	source: string
-	blog: string
-	home: string
 }
 
 export interface TurtleGenerateOptions {
 	websiteMetadata: WebsiteMetadata
+	blogDir: string
+	homeName: string
 }
 
 export interface TurtleMetadataTransformOptions {
