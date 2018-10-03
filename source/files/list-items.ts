@@ -2,7 +2,7 @@
 import * as fs from "fs"
 import {promisify} from "util"
 
-import {DirectoryItem} from "./interfaces"
+import {FileSystemItem} from "./interfaces"
 import {arrayFlatten} from "../toolbox/array-flatten"
 
 const lstat = promisify(fs.lstat)
@@ -12,9 +12,9 @@ export async function listItems(
 	dir: string,
 	recursive: boolean = false,
 	path: string = ""
-): Promise<DirectoryItem[]> {
+): Promise<FileSystemItem[]> {
 
-	const items: DirectoryItem[] = await Promise.all(
+	const items: FileSystemItem[] = await Promise.all(
 		(await readdir(`${dir}/${path}`, {encoding: "utf8"}))
 			.map(async name => {
 				const newPath = path ? `${path}/${name}` : name
@@ -28,7 +28,7 @@ export async function listItems(
 
 		? [
 			...items,
-			...arrayFlatten<DirectoryItem>(
+			...arrayFlatten<FileSystemItem>(
 				await Promise.all(
 					items
 						.filter(item => item.isDirectory)

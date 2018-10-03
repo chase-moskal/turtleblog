@@ -1,6 +1,6 @@
 
 import {listItems} from "./list-items"
-import {DirectoryItem} from "./interfaces"
+import {FileSystemItem} from "./interfaces"
 
 describe("files/list-items function", () => {
 

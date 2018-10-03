@@ -6,9 +6,6 @@ import { readFile } from "../files/fsc";
 
 const generateId = () => shortid.generate()
 
-const regexForMarkdown = 
-const regexForPug = 
-
 /**
  * Read a source page directory and return page metadata
  */
