@@ -1,7 +1,7 @@
 {
 	"name": "turtleblog",
-	"version": "0.0.0-dev.8",
-	"description": "simple blog generator",
+	"version": "0.0.0-dev.9",
+	"description": "concept blog generator",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"license": "UNLICENSED",
 	"main": "dist",
@@ -16,9 +16,9 @@
 		"dist"
 	],
 	"scripts": {
-		"prepare": "run-s build test",
-		"build": "run-s build-clean build-barrel && run-p build-scripts build-styles && run-s build-demo",
-		"build:debug": "run-s build",
+		"prepare": "run-s build && run-p test build-demo && echo done production build ✔",
+		"build": "run-s build-clean build-barrel && run-p build-scripts build-styles",
+		"build:debug": "run-s build && echo done debug build ✔",
 		"build-clean": "rimraf dist dist-demo && mkdirp dist dist-demo",
 		"build-barrel": "barrelsby --exclude \"\\.test\\.ts\" --directory source --delete && sed -i -e 's/;$//' source/index.ts",
 		"build-scripts": "tsc",
@@ -62,6 +62,7 @@
 	"dependencies": {
 		"commander": "2.18.0",
 		"get-stdin": "6.0.0",
+		"recursive-readdir": "2.2.2",
 		"shortid": "2.2.13",
 		"uuid": "3.3.2"
 	}

@@ -1,4 +1,5 @@
 
+import * as path from "path"
 import * as shortid from "shortid"
 import * as MarkdownIt from "markdown-it"
 
@@ -13,26 +14,42 @@ const nameToTitle = (name: string) => name.replace(/-/g, " ")
 const renderMarkdown = (markdown: string) => markdownIt.render(markdown)
 
 /**
+ * Read page metadata for an array of directories
+ * - filter out any null results
+ */
+export async function readPages(
+	source: string,
+	sourcePaths: string[]
+): Promise<PageMetadata[]> {
+
+	const readings: PageMetadata[] = await Promise.all(sourcePaths.map(
+		path => readPageDirectory(source, path)
+	))
+
+	return readings.filter(page => !!page)
+}
+
+/**
  * Read a source page directory and return page metadata
  */
-export async function readPageMetadata({name, dirPath}: {
+async function readPageDirectory(
+	source: string,
+	sourcePath: string
+): Promise<PageMetadata | null> {
+	const name = path.basename(sourcePath)
+	const fullSourcePath = `${source}/${sourcePath}`
 
-		/** Url-safe name of the page */
-		name: string
-
-		/** Source path to the page directory */
-		dirPath: string
-
-}): Promise<PageMetadata> {
-
-	const pageFiles = await listFiles(dirPath)
+	const pageFiles = await listFiles(fullSourcePath)
 	const markdownFiles = pageFiles.filter(filename => /.+\.md$/i.test(filename))
+
+	if (!markdownFiles.length)
+		return null
 
 	const sections: PageSectionMetadata[] = await Promise.all(
 		markdownFiles.map(async (filename): Promise<PageSectionMetadata> => {
 			const name = regex(/^(?:|(\d+)-)(.+)\.md$/i, filename, 2)
 			const title = nameToTitle(name)
-			const markdown = await readFile(`${dirPath}/${filename}`)
+			const markdown = await readFile(`${fullSourcePath}/${filename}`)
 			const content = renderMarkdown(markdown)
 			return {name, title, content}
 		})
@@ -40,7 +57,8 @@ export async function readPageMetadata({name, dirPath}: {
 
 	return {
 		id: generateId(),
-		name: name,
+		sourcePath,
+		name,
 		title: nameToTitle(name),
 		link: `/${name}`,
 		sections

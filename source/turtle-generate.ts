@@ -1,5 +1,7 @@
 
 import * as pug from "pug"
+
+import {regex} from "./toolbox/regex"
 import {TurtleGenerator, PageOutput} from "./interfaces"
 
 /**
@@ -26,12 +28,13 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 				page => page.id === articleMetadata.pageId
 			)
 			const isHome = pageMetadata.id === websiteMetadata.homeId
+			const choppedPath = regex(/pages\/(.+)/i, pageMetadata.sourcePath)
 			return {
 				id: pageMetadata.id,
 				name: pageMetadata.name,
-				path: isHome
+				distPath: isHome
 					? `index.html`
-					: `${pageMetadata.name}/index.html`,
+					: `${choppedPath}/index.html`,
 				content: renderPage({
 					pageMetadata,
 					websiteMetadata,
@@ -54,7 +57,8 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 			return {
 				id: pageMetadata.id,
 				name: pageMetadata.name,
-				path: `blog/${blogPostMetadata.date}/${pageMetadata.name}/index.html`,
+				distPath: `${websiteMetadata.blog}/${blogPostMetadata.date}`
+					+ `/${pageMetadata.name}/index.html`,
 				content: renderBlogPost({
 					pageMetadata,
 					websiteMetadata,
@@ -76,7 +80,7 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 	const blogIndex: PageOutput = {
 		id: blogIndexPage.id,
 		name: blogIndexPage.name,
-		path: `blog/index.html`,
+		distPath: `blog/index.html`,
 		content: renderBlogIndex({
 			pageMetadata: blogIndexPage,
 			websiteMetadata,

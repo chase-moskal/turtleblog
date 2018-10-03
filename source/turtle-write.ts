@@ -12,9 +12,9 @@ export const turtleWrite: TurtleWriter = async({websiteOutput, dist}) => {
 
 	const writeOperations = websiteOutput.pages.map(
 		async page => {
-			const dir = dirname(page.path)
+			const dir = dirname(page.distPath)
 			mkdir("-p", `${dist}/${dir === "." ? "" : dir}`)
-			return writeFile(`${dist}/${page.path}`, page.content)
+			return writeFile(`${dist}/${page.distPath}`, page.content)
 		}
 	)
 

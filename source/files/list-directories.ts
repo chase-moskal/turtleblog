@@ -1,8 +1,8 @@
 
 import {listItems} from "./list-items"
 
-export async function listDirectories(dir: string): Promise<string[]> {
-	return (await listItems(dir))
+export async function listDirectories(dir: string, recursive: boolean = false): Promise<string[]> {
+	return (await listItems(dir, recursive))
 		.filter(item => !!item.isDirectory)
-		.map(({name}) => name)
+		.map(({path}) => path)
 }

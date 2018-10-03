@@ -1,11 +1,7 @@
 
+import {readPages} from "./turtlebox/read-pages"
+import {PageMetadata, TurtleReader} from "./interfaces"
 import {listDirectories} from "./files/list-directories"
-import {readPageMetadata} from "./turtlebox/read-page-metadata"
-
-import {
-	PageMetadata,
-	TurtleReader
-} from "./interfaces"
 
 const getPageIdFromReference = (page: PageMetadata) => ({pageId: page.id})
 
@@ -18,12 +14,10 @@ export const turtleRead: TurtleReader = async({source, blog, home}) => {
 	// read articles
 	//
 
-	const pageDirectories = await listDirectories(`${source}/pages`)
-	const articlePagesMetadata: PageMetadata[] = await Promise.all(
-		pageDirectories.map(
-			name => readPageMetadata({name, dirPath: `${source}/pages/${name}`})
-		)
-	)
+	const pageDirectories = (await listDirectories(`${source}/pages`, true))
+		.map(pageDirectoryPath => `pages/${pageDirectoryPath}`)
+
+	const articlePagesMetadata = await readPages(source, pageDirectories)
 
 	//
 	// read blog posts
@@ -35,13 +29,10 @@ export const turtleRead: TurtleReader = async({source, blog, home}) => {
 	// read blog index
 	//
 
-	const blogIndexMetadata = await readPageMetadata({
-		name: blog,
-		dirPath: `${source}/${blog}`
-	})
+	const [blogIndexMetadata] = await readPages(source, [blog])
 
 	//
-	// return website metadata
+	// prepare and return website metadata
 	//
 
 	return {

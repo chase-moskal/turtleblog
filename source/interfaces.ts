@@ -1,4 +1,15 @@
 
+/*
+
+path terminology
+
+- sourcePath: path within the source dir
+- distPath: path within the dist dir
+- fullSourcePath: includes source dir
+- fullDistPath: includes dist dir
+
+*/
+
 export type Id = string
 
 //
@@ -22,8 +33,9 @@ export interface WebsiteMetadata {
 export interface PageMetadata {
 	id: Id
 	name: string
-	title: string
 	link: string
+	title: string
+	sourcePath: string
 	sections: PageSectionMetadata[]
 }
 
@@ -61,7 +73,7 @@ export interface WebsiteOutput {
 export interface PageOutput {
 	id: Id
 	name: string
-	path: string
+	distPath: string
 	content: string
 	files: FileCopyOutput[]
 }

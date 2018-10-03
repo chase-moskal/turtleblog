@@ -1,7 +1,7 @@
 
-# turtleblog
+# turtleblog 🐢
 
-&nbsp; *simple blog generator*
+&nbsp; *concept blog generator*
 
 ### turtleblog is based on three simple functions
 
@@ -76,6 +76,9 @@ async function main() {
     {page-name}/  # standard page directory
       {section-name}.md
       {section-name}.md
+      {page-name}/  # sub-page directory
+        {section-name}.md
+        {section-name}.md
 
   blog/
     index/  # standard page directory
