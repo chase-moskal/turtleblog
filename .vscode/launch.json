@@ -5,7 +5,6 @@
 			"type": "node",
 			"request": "launch",
 			"name": "debug turtle-read",
-			"protocol": "inspector",
 			"program": "${workspaceFolder}/dist/cli/turtle-read.js",
 			"args": ["--source", "source-demo"]
 		},

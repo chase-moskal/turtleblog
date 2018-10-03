@@ -1,6 +1,7 @@
 
 import * as pug from "pug"
 
+import {readFile} from "./files/fsc"
 import {regex} from "./toolbox/regex"
 import {TurtleGenerator, PageOutput} from "./interfaces"
 
@@ -14,9 +15,18 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 	// grab standard pug layouts
 	//
 
-	const renderPage = pug.compileFile(`${source}/layouts/page.pug`)
-	const renderBlogPost = pug.compileFile(`${source}/layouts/blog-post.pug`)
-	const renderBlogIndex = pug.compileFile(`${source}/layouts/blog-index.pug`)
+	const compilePugRenderer = async(path: string) =>
+		pug.compile(await readFile(path), {filename: path})
+
+	const [
+		renderPage,
+		renderBlogPost,
+		renderBlogIndex
+	] = await Promise.all([
+		compilePugRenderer(`${source}/layouts/page.pug`),
+		compilePugRenderer(`${source}/layouts/blog-post.pug`),
+		compilePugRenderer(`${source}/layouts/blog-index.pug`),
+	])
 
 	//
 	// generate article pages
