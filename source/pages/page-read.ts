@@ -1,8 +1,8 @@
 
 import * as shortid from "shortid"
 import {PageData} from "./interfaces"
+import {readFile} from "../files/fsc"
 import {listFiles} from "../files/list-files"
-import { readFile } from "../files/fsc";
 
 const generateId = () => shortid.generate()
 

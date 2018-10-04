@@ -8,13 +8,13 @@ dieOnError()
 
 commander
 	.option("-s, --source [dir]", "website source code directory", "source")
-	.option("-b, --blog [dir]", "name of the blog directory", "blog")
-	.option("-h, --home [dir]", "name of the homepage", "home")
 	.parse(process.argv)
+	// .option("-b, --blog [dir]", "name of the blog directory", "blog")
+	// .option("-h, --home [dir]", "name of the homepage", "home")
 
 ; (async() => {
-	const {source, blog, home} = commander
-	const websiteMetadata = await turtleRead({source, blog, home})
+	const {source} = commander
+	const websiteMetadata = await turtleRead({source})
 	const stdout = JSON.stringify(websiteMetadata)
 	process.stdout.write(stdout)
 })()

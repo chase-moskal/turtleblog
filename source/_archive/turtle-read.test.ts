@@ -1,5 +1,5 @@
 
-import {turtleRead} from "./turtle-read"
+import {turtleRead} from "../turtle-read"
 
 describe("turtle-read", () => {
 	const source = "source-demo"

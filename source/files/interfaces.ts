@@ -1,10 +1,7 @@
 
+import {TreeNode} from "../toolbox/tree-node"
+
 export interface FileSystemItem {
-	name: string
 	path: string
 	isDirectory: boolean
-}
-
-export interface FileSystemTree extends FileSystemItem {
-	children: FileSystemTree[]
 }

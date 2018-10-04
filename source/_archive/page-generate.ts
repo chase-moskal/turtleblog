@@ -7,7 +7,7 @@ import * as MarkdownIt from "markdown-it"
 import {readFile} from "../files/fsc"
 import {regex} from "../toolbox/regex"
 import {listFiles} from "../files/list-files"
-import {PageData, PageContext, PageOutput, SectionData} from "./interfaces"
+import {PageData, PageContext, PageOutput, SectionData} from "../pages/interfaces"
 
 const generateId = () => shortid.generate()
 const markdownIt = new MarkdownIt({html: true})

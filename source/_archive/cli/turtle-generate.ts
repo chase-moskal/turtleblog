@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import * as getStdin from "get-stdin"
-import {turtleGenerate} from "../turtle-generate"
-import {dieOnError} from "../toolbox/die-on-error"
+import {turtleGenerate} from "../../turtle-generate"
+import {dieOnError} from "../../toolbox/die-on-error"
 
 dieOnError()
 

@@ -18,7 +18,7 @@ export interface PageContext {
 	// navigation: any[]
 }
 
-export interface PageOutput {
+export interface PageFinal {
 	id: Id
 	html: string
 	distPath: string

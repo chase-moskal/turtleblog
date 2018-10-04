@@ -10,7 +10,7 @@ path terminology
 
 */
 
-export type Id = string
+import {PageData, Id, FileCopyOutput} from "./pages/interfaces"
 
 //
 // WEBSITE METADATA
@@ -21,44 +21,29 @@ export type Id = string
 
 export interface WebsiteMetadata {
 	source: string
-	pages: PageMetadata[]
+	pages: PageData[]
 	homeReference: HomeReference
 	articleReferences: ArticleReference[]
-	blogPostReferences: BlogPostReference[]
 	blogIndexReference: BlogIndexReference
+	blogPostReferences: BlogPostReference[]
 	navigationLinkReferences: NavigationLinkReference[]
 }
 
-export interface PageMetadata {
-	id: Id
-	name: string
-	link: string
-	title: string
-	sourcePath: string
-	sections: PageSectionMetadata[]
-}
-
-export interface PageSectionMetadata {
-	name: string
-	title: string
-	content: string
-}
-
-export interface PageReferenceMetadata {
+export interface PageReference {
 	pageId: Id
 }
 
-export interface HomeReference extends PageReferenceMetadata {}
+export interface HomeReference extends PageReference {}
 
-export interface ArticleReference extends PageReferenceMetadata {}
+export interface ArticleReference extends PageReference {}
 
-export interface NavigationLinkReference extends PageReferenceMetadata {}
+export interface NavigationLinkReference extends PageReference {}
 
-export interface BlogPostReference extends PageReferenceMetadata {
+export interface BlogPostReference extends PageReference {
 	date: string
 }
 
-export interface BlogIndexReference extends PageReferenceMetadata {}
+export interface BlogIndexReference extends PageReference {}
 
 //
 // WEBSITE OUTPUT
@@ -77,11 +62,6 @@ export interface PageOutput {
 	distPath: string
 	content: string
 	files: FileCopyOutput[]
-}
-
-export interface FileCopyOutput {
-	sourceFilePath: string
-	distDirPath: string
 }
 
 export interface PageReferenceOutput {
