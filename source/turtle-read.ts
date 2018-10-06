@@ -3,6 +3,9 @@ import {readFile} from "./files/fsc"
 import {pageRead} from "./pages/page-read"
 import {PageData} from "./pages/interfaces"
 import {listItemTree} from "./files/list-item-tree"
+import { FileSystemItem } from "./files/interfaces"
+import { TreeNode } from "./toolbox/tree-node"
+import { NavigationReference } from "./interfaces"
 
 // const getPageIdFromReference = (page: PageMetadata) => ({pageId: page.id})
 
@@ -20,8 +23,6 @@ interface ArticleReference {
  * Read a turtle website directory and return website metadata
  */
 export const turtleRead = async({source}) => {
-	const pages: PageData[] = []
-
 	const [pugPage, blogIndex, blogPost] = await Promise.all([
 		readFile(`${source}/layouts/page.pug`),
 		readFile(`${source}/layouts/blog-index.pug`),
@@ -39,22 +40,55 @@ export const turtleRead = async({source}) => {
 	})
 
 	const articles = await listItemTree(`${source}/articles`)
-	const articlePageDirectories = articles.items.filter(item => item.isDirectory)
-	const articlePages = (await Promise.all(
-		articlePageDirectories
-			.map(async item => pageRead({
-				source,
-				sourcePath: `articles/${item.path}`,
-				pugTemplate: pugPage
-			}))
-	)).filter(page => !!page)
+	// const articlePages = await articles.tree
+	// 	.filter(fsItem => !!fsItem.isDirectory)
+	// 	.map(async fsItem =>
+	// 		pageRead({
+	// 			source,
+	// 			sourcePath: `articles/${fsItem.path}`,
+	// 			pugTemplate: pugPage
+	// 		})
+	// 	)
+	// 	.promiseAll<PageData>()
+
+	// const articlePages: TreeRoot<PageData>[] = articles.tree
+	// 	.map(fsItem => )
+
+	// const articlePageDirectories = articles.items.filter(item => item.isDirectory)
+	// const articlePages = (await Promise.all(
+	// 	articlePageDirectories
+	// 		.map(async item => pageRead({
+	// 			source,
+	// 			sourcePath: `articles/${item.path}`,
+	// 			pugTemplate: pugPage
+	// 		}))
+	// )).filter(page => !!page)
+
+	const pages: PageData[] = [
+		// homePage,
+		// ...articlePages
+	]
 
 	return {
 		source,
-		pages: [
-			homePage,
-			articles.items
-		]
+		pages,
+
+		articlePages: await articles.tree
+			.filter(fsItem => {
+				const result = !!fsItem.isDirectory
+				console.log("!!!", {fsItem, result})
+				return result
+			})
+			// .map(async fsItem =>
+			// 	pageRead({
+			// 		source,
+			// 		sourcePath: `articles/${fsItem.path}`,
+			// 		pugTemplate: pugPage
+			// 	})
+			// )
+			// .promiseAll<PageData>()
+
+		// navigation: articles.tree.toArray()
 		// homeReference: HomeReference
 		// articleReferences: ArticleReference[]
 		// blogIndexReference: BlogIndexReference

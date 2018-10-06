@@ -26,7 +26,7 @@ export interface WebsiteMetadata {
 	articleReferences: ArticleReference[]
 	blogIndexReference: BlogIndexReference
 	blogPostReferences: BlogPostReference[]
-	navigationLinkReferences: NavigationLinkReference[]
+	navigationReferences: NavigationReference[]
 }
 
 export interface PageReference {
@@ -37,7 +37,7 @@ export interface HomeReference extends PageReference {}
 
 export interface ArticleReference extends PageReference {}
 
-export interface NavigationLinkReference extends PageReference {}
+export interface NavigationReference extends PageReference {}
 
 export interface BlogPostReference extends PageReference {
 	date: string

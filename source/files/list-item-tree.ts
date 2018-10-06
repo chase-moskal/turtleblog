@@ -14,7 +14,7 @@ export async function listItemTree(
 ): Promise<{
 
 	/** File system items presented in tree form, preserving the hierarchy */
-	treeNodes: TreeNode<FileSystemItem>[]
+	tree: TreeNode<FileSystemItem>
 
 	/** Flat array of file system items */
 	items: FileSystemItem[]
@@ -56,11 +56,11 @@ export async function listItemTree(
 				if (isDirectory) {
 
 					// recursively list the child directory
-					const {treeNodes: childTreeNodes, items: childItems} = await listItemTree(dir, path)
+					const {tree, items: childItems} = await listItemTree(dir, path)
 
 					// add child tree nodes as children to the parent tree
-					for (const childTreeNode of childTreeNodes)
-						treeNode.addChild(childTreeNode)
+					for (const childTreeNode of tree.children)
+						treeNode.addChildNode(childTreeNode)
 
 					// add the items to the flat item list
 					items = [...items, ...childItems]
@@ -70,5 +70,8 @@ export async function listItemTree(
 			})
 	)
 
-	return {treeNodes, items}
+	const tree = new TreeNode<FileSystemItem>(undefined, true)
+	for (const node of treeNodes) tree.addChildNode(node)
+
+	return {tree, items}
 }
