@@ -10,8 +10,6 @@ type Unpacked<T> =
 				? U
 				: T
 
-export const TreeRootNoValue = Symbol()
-
 export class TreeNode<T> {
 	readonly value: T
 	readonly root: boolean
@@ -56,21 +54,21 @@ export class TreeNode<T> {
 			: [this.value, ...children]
 	}
 
-	async promiseAll<X>(): Promise<TreeNode<X>> {
+	async promiseAll(): Promise<TreeNode<Unpacked<T>>> {
 		if (this.root) {
 			const newChildren = await Promise.all(
-				this.children.map(child => child.promiseAll<X>())
+				this.children.map(child => child.promiseAll())
 			)
-			const newTree = new TreeNode<X>(undefined, this.root)
+			const newTree = new TreeNode(undefined, this.root)
 			for (const newChild of newChildren) newTree.addChildNode(newChild)
 			return newTree
 		}
 		else {
 			const [newValue, newChildren] = await Promise.all([
 				this.value,
-				Promise.all(this.children.map(child => child.promiseAll<X>()))
+				Promise.all(this.children.map(child => child.promiseAll()))
 			])
-			const newTree = new TreeNode<X>(<any>newValue, this.root)
+			const newTree = new TreeNode<Unpacked<T>>(<any>newValue, this.root)
 			for (const newChild of newChildren) newTree.addChildNode(newChild)
 			return newTree
 		}
