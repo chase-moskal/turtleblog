@@ -95,7 +95,7 @@ describe("tree node", () => {
 	})
 
 	describe("promiseAll", () => {
-		function delayValue<X>(value: X, delay = 100): Promise<X> {
+		function delayValue<X>(value: X, delay = 1): Promise<X> {
 			return new Promise(
 				(resolve, reject) => setTimeout(() => resolve(value), delay)
 			)
