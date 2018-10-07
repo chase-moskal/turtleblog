@@ -11,12 +11,10 @@ const generateId = () => shortid.generate()
  */
 export async function pageRead({
 	source,
-	sourcePath,
-	pugTemplate
+	sourcePath
 }: {
 	source: string
 	sourcePath: string
-	pugTemplate: PugTemplate
 }): Promise<PageData | null> {
 
 	const fullSourcePath = `${source}/${sourcePath}`
@@ -41,7 +39,7 @@ export async function pageRead({
 			path: pugPath,
 			pugContent: await readFile(pugPath)
 		}
-		: pugTemplate
+		: null
 
 	if (markdownFiles.length || otherFiles.length)
 		return {

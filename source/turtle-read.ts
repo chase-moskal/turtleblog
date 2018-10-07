@@ -1,12 +1,13 @@
 
 import {readFile} from "./files/fsc"
 import {pageRead} from "./pages/page-read"
-import {PageReference} from "./interfaces"
-import {PageData} from "./pages/interfaces"
 import {listItemTree} from "./files/list-item-tree"
 import {listDirectories} from "./files/list-directories"
+import {PageData, PugTemplate} from "./pages/interfaces"
+import {promiseAllKeys} from "./toolbox/promise-all-keys"
+import {PageReference, TurtleReader, WebsiteTemplates} from "./interfaces"
 
-const getPug = async(path: string) => ({
+const getPugTemplate = async(path: string): Promise<PugTemplate> => ({
 	path,
 	pugContent: await readFile(path)
 })
@@ -18,74 +19,77 @@ const pageToReference = (page: PageData): PageReference => ({
 /**
  * Read a turtle website directory and return website metadata
  */
-export const turtleRead = async({source}) => {
-	const [pugPage, pugBlogIndex, pugBlogPost] = await Promise.all([
-		getPug(`${source}/layouts/page.pug`),
-		getPug(`${source}/layouts/blog-index.pug`),
-		getPug(`${source}/layouts/blog-post.pug`)
-	])
+export const turtleRead: TurtleReader = async({source}) => {
 
 	//
-	// read home page
+	// read all resources simultaneously
 	//
 
-	const homePage = await pageRead({
-		source,
-		sourcePath: "home",
-		pugTemplate: pugPage
+	const read = await promiseAllKeys({
+		pugPage: getPugTemplate(`${source}/layouts/page.pug`),
+		pugBlogIndex: getPugTemplate(`${source}/layouts/blog-index.pug`),
+		pugBlogPost: getPugTemplate(`${source}/layouts/blog-post.pug`),
+
+		homePage: pageRead({
+			source,
+			sourcePath: "home"
+		}),
+
+		articleTree: listItemTree(`${source}/articles`),
+
+		blogIndexPage: pageRead({
+			source,
+			sourcePath: "blog-index"
+		}),
+
+		blogPostDirectories: listDirectories(`${source}/blog`),
 	})
 
 	//
-	// read articles
+	// read article pages
 	//
 
-	const articleTree = await listItemTree(`${source}/articles`)
-	const articlePageTree = await articleTree
+	const articlePageTree = await read.articleTree
 		.filter(fsItem => !!fsItem.isDirectory)
 		.map(async fsItem => pageRead({
 			source,
-			sourcePath: `articles/${fsItem.path}`,
-			pugTemplate: pugPage
+			sourcePath: `articles/${fsItem.path}`
 		}))
 		.promiseAll()
 	const articlePages = articlePageTree.toArray().filter(page => !!page)
 
 	//
-	// read blog index
-	//
-
-	const blogIndexPage = await pageRead({
-		source,
-		sourcePath: "blog-index",
-		pugTemplate: pugBlogIndex
-	})
-
-	//
 	// read blog posts
 	//
 
-	const blogPostPages = await Promise.all((await listDirectories(`${source}/blog`))
-		.map(async pageName => pageRead({
+	const blogPostPages = await Promise.all(
+		read.blogPostDirectories.map(async pageName => pageRead({
 			source,
-			sourcePath: `blog/${pageName}`,
-			pugTemplate: pugBlogPost
+			sourcePath: `blog/${pageName}`
 		}))
 	)
 
 	//
-	// Return website metadata
+	// return website metadata
 	//
 
 	return {
+		source,
+		templates: {
+			home: read.pugPage,
+			article: read.pugPage,
+			blogIndex: read.pugBlogIndex,
+			blogPost: read.pugBlogPost
+		},
 		pages: [
-			homePage,
-			blogIndexPage,
+			read.homePage,
+			read.blogIndexPage,
 			...articlePages,
 			...blogPostPages
 		],
 		references: {
-			home: pageToReference(homePage),
-			blogIndex: pageToReference(blogIndexPage),
+			home: pageToReference(read.homePage),
+			blogIndex: pageToReference(read.blogIndexPage),
 			blogPosts: blogPostPages.map(pageToReference),
 			articles: articlePages.map(pageToReference),
 			articleTree: articlePageTree.map(pageToReference)

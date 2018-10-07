@@ -10,7 +10,8 @@ path terminology
 
 */
 
-import {PageData, Id, FileCopyOutput} from "./pages/interfaces"
+import {TreeNode} from "./toolbox/tree-node"
+import {PageData, Id, FileCopyOutput, PugTemplate} from "./pages/interfaces"
 
 //
 // WEBSITE METADATA
@@ -21,29 +22,27 @@ import {PageData, Id, FileCopyOutput} from "./pages/interfaces"
 
 export interface WebsiteMetadata {
 	source: string
+	templates: WebsiteTemplates
 	pages: PageData[]
-	homeReference: HomeReference
-	articleReferences: ArticleReference[]
-	blogIndexReference: BlogIndexReference
-	blogPostReferences: BlogPostReference[]
-	navigationReferences: NavigationReference[]
+	references: {
+		home: PageReference
+		blogIndex: PageReference
+		blogPosts: PageReference[]
+		articles: PageReference[]
+		articleTree: TreeNode<PageReference>
+	}
+}
+
+export interface WebsiteTemplates {
+	home: PugTemplate
+	article: PugTemplate
+	blogIndex: PugTemplate
+	blogPost: PugTemplate
 }
 
 export interface PageReference {
 	pageId: Id
 }
-
-export interface HomeReference extends PageReference {}
-
-export interface ArticleReference extends PageReference {}
-
-export interface NavigationReference extends PageReference {}
-
-export interface BlogPostReference extends PageReference {
-	date: string
-}
-
-export interface BlogIndexReference extends PageReference {}
 
 //
 // WEBSITE OUTPUT
@@ -105,8 +104,8 @@ export interface TurtleReadOptions {
 
 export interface TurtleGenerateOptions {
 	websiteMetadata: WebsiteMetadata
-	blogDir: string
-	homeName: string
+	// blogDir: string
+	// homeName: string
 }
 
 export interface TurtleMetadataTransformOptions {

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import * as commander from "commander"
+
 import {turtleRead} from "../turtle-read"
 import {dieOnError} from "../toolbox/die-on-error"
 

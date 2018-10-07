@@ -1,14 +1,6 @@
 
+import {Unpacked} from "./interfaces"
 import {arrayFlatten} from "./array-flatten"
-
-type Unpacked<T> =
-	T extends (infer U)[]
-		? U
-		: T extends (...args: any[]) => infer U
-			? U
-			: T extends Promise<infer U>
-				? U
-				: T
 
 export class TreeNode<T> {
 	readonly value: T
