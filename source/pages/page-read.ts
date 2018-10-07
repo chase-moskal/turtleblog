@@ -1,8 +1,8 @@
 
 import * as shortid from "shortid"
-import {PageData} from "./interfaces"
 import {readFile} from "../files/fsc"
 import {listFiles} from "../files/list-files"
+import {PageData, PugTemplate} from "./interfaces"
 
 const generateId = () => shortid.generate()
 
@@ -16,7 +16,7 @@ export async function pageRead({
 }: {
 	source: string
 	sourcePath: string
-	pugTemplate?: string
+	pugTemplate: PugTemplate
 }): Promise<PageData | null> {
 
 	const fullSourcePath = `${source}/${sourcePath}`
@@ -35,6 +35,14 @@ export async function pageRead({
 		}
 	}
 
+	const pugPath = `${fullSourcePath}/${pugFile}`
+	const finalPugTemplate: PugTemplate = pugFile
+		? {
+			path: pugPath,
+			pugContent: await readFile(pugPath)
+		}
+		: pugTemplate
+
 	if (markdownFiles.length || otherFiles.length)
 		return {
 			id: generateId(),
@@ -43,9 +51,7 @@ export async function pageRead({
 				filename,
 				markdown: await readFile(`${fullSourcePath}/${filename}`)
 			}))),
-			pugTemplate: pugFile
-				? await readFile(`${fullSourcePath}/${pugFile}`)
-				: pugTemplate,
+			pugTemplate: finalPugTemplate,
 			files: otherFiles
 		}
 }

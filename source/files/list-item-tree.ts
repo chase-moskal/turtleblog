@@ -11,18 +11,7 @@ const readdir = promisify(fs.readdir)
 export async function listItemTree(
 	dir: string,
 	pathProgress: string = ""
-): Promise<{
-
-	/** File system items presented in tree form, preserving the hierarchy */
-	tree: TreeNode<FileSystemItem>
-
-	/** Flat array of file system items */
-	items: FileSystemItem[]
-
-}> {
-
-	// init flat array of items
-	let items: FileSystemItem[] = []
+): Promise<TreeNode<FileSystemItem>> {
 
 	// obtain the tree recursively, and also push to the flat items array
 	const treeNodes = await Promise.all(
@@ -41,13 +30,7 @@ export async function listItemTree(
 				// obtain the stats for the file system item
 				const stats = await lstat(`${dir}/${path}`)
 				const isDirectory = stats.isDirectory()
-
-				const item: FileSystemItem = {
-					path,
-					isDirectory
-				}
-
-				items = [...items, item]
+				const item: FileSystemItem = {path, isDirectory}
 
 				// create the tree node
 				const treeNode = new TreeNode<FileSystemItem>(item)
@@ -56,14 +39,11 @@ export async function listItemTree(
 				if (isDirectory) {
 
 					// recursively list the child directory
-					const {tree, items: childItems} = await listItemTree(dir, path)
+					const tree = await listItemTree(dir, path)
 
 					// add child tree nodes as children to the parent tree
 					for (const childTreeNode of tree.children)
 						treeNode.addChildNode(childTreeNode)
-
-					// add the items to the flat item list
-					items = [...items, ...childItems]
 				}
 
 				return treeNode
@@ -73,5 +53,5 @@ export async function listItemTree(
 	const tree = new TreeNode<FileSystemItem>(undefined, true)
 	for (const node of treeNodes) tree.addChildNode(node)
 
-	return {tree, items}
+	return tree
 }

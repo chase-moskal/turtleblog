@@ -72,7 +72,7 @@ describe("tree node", () => {
 
 	describe("filter", () => {
 
-		it("filter operation can remove children", () => {
+		it("filter operation can remove children", async() => {
 			const tree = prepareExampleNode()
 
 			// filter child
@@ -82,6 +82,15 @@ describe("tree node", () => {
 			// filter sub child
 			const result2 = tree.filter(a => a.b !== "4")
 			expect(result2.children[1].children).toHaveLength(1)
+		})
+
+		it("filter operation removes children correctly", async() => {
+			const tree = new TreeNode(undefined, true)
+			tree.addChildValue("1")
+			tree.children[0].addChildValue("2")
+
+			const result = tree.filter(x => !!x)
+			expect(result.toArray()).toHaveLength(2)
 		})
 	})
 

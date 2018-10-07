@@ -5,7 +5,7 @@ export interface PageData {
 	id: Id
 	sourcePath: string
 	markdowns: MarkdownData[]
-	pugTemplate: string | null
+	pugTemplate: null | PugTemplate
 	files: string[]
 }
 
@@ -23,6 +23,11 @@ export interface PageFinal {
 	html: string
 	distPath: string
 	fileCopies: FileCopyOutput[]
+}
+
+export interface PugTemplate {
+	pugContent: string
+	path: string
 }
 
 export interface MarkdownData {
