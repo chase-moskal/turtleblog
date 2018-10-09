@@ -1,4 +1,7 @@
 
+import {PageReference} from "../interfaces"
+import {TreeNode} from "../toolbox/tree-node"
+
 export type Id = string
 
 export interface PageData {
@@ -11,11 +14,12 @@ export interface PageData {
 
 export interface PageContext {
 	id: Id
+	type: string
 	name: string
 	link: string
 	title: string
 	sections: SectionData[]
-	// navigation: any[]
+	navigation: TreeNode<PageReference>
 }
 
 export interface PageFinal {

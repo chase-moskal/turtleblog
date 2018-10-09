@@ -1,0 +1,31 @@
+
+doctype html
+html(class=`page ${pageContext.type} ${pageContext.name}`)
+
+head
+	meta(charset="utf-8")
+	title= pageTitle
+	link(rel="stylesheet" href="/style.css")
+	block head1
+
+body
+	block body1
+
+	header.header
+		h1
+			span Turtle
+			span Blog
+		nav
+			p Nav coming soon!
+
+	block body2
+
+	main.content
+		block body3
+		each section in pageContext.sections
+			section.section(data-name=section.name)
+				div.section-name= section.name
+				div.section-content !{section.content}
+		block body4
+
+	block body5

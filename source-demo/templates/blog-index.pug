@@ -1,28 +1,12 @@
 
-include _mixins
+extends _page.pug
 
-doctype html
-html(class=`page blog-index ${pageMetadata.name}`)
-
-head
-	+head(`turtleblog`)
-	link(rel="stylesheet" href="/style.css")
-
-body
-	//- +header(blog, pages)
-
-	main.content
-
-		each section in pageMetadata.sections
-			section.section(data-name=section.name)
-				div.section-name= section.name
-				div.section-content !{section.content}
-
-		.posts
-			each post in websiteMetadata.blogPosts
-				- var blogPage = websiteMetadata.pages.find(p => p.id === post.pageId)
-				a(href=blogPage.link)
-					span= post.date
-					|
-					|
-					span= blogPage.title
+block body4
+	.posts
+		each post in websiteMetadata.references.blogPosts
+			- var blogPage = websiteMetadata.pages.find(p => p.id === post.pageId)
+			a(href=blogPage.link)
+				//- span= post.date
+				//- |
+				//- |
+				span= blogPage.title

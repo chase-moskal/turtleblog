@@ -27,9 +27,12 @@ export const turtleRead: TurtleReader = async({source}) => {
 	//
 
 	const read = await promiseAllKeys({
-		pugPage: getPugTemplate(`${source}/templates/page.pug`),
-		pugBlogIndex: getPugTemplate(`${source}/templates/blog-index.pug`),
-		pugBlogPost: getPugTemplate(`${source}/templates/blog-post.pug`),
+		templates: promiseAllKeys({
+			home: getPugTemplate(`${source}/templates/home.pug`),
+			article: getPugTemplate(`${source}/templates/article.pug`),
+			blogIndex: getPugTemplate(`${source}/templates/blog-index.pug`),
+			blogPost: getPugTemplate(`${source}/templates/blog-post.pug`),
+		}),
 
 		styles: Promise.all(
 			(await listFiles(source))
@@ -87,12 +90,7 @@ export const turtleRead: TurtleReader = async({source}) => {
 	return {
 		source,
 		styles: read.styles,
-		templates: {
-			home: read.pugPage,
-			article: read.pugPage,
-			blogIndex: read.pugBlogIndex,
-			blogPost: read.pugBlogPost
-		},
+		templates: read.templates,
 		pages: [
 			read.homePage,
 			read.blogIndexPage,
