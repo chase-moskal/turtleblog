@@ -16,8 +16,8 @@
 		"dist"
 	],
 	"scripts": {
-		"prepare": "run-s build && run-p test && echo done production build ✔",
-		"prepare-next": "run-s build && run-p test build-demo && echo done production build ✔",
+		"prepare": "run-s build && run-p test build-demo && echo done production build ✔",
+		"prepare-x": "run-s build && run-p test && echo done production build ✔",
 		"build": "run-s build-clean build-barrel && run-p build-scripts build-styles",
 		"build:debug": "run-s build && echo done debug build ✔",
 		"build-clean": "rimraf dist dist-demo && mkdirp dist dist-demo",

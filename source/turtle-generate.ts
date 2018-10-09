@@ -40,6 +40,30 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 			}))
 		},
 
+		// blog index
+		{
+			id: blogIndex.id,
+			name: "blog-index",
+			distPath: "blog/index.html",
+			content: "",
+			files: blogIndex.files.map(file => ({
+				fullSourceFilePath: `${source}/${home.sourcePath}/${file}`,
+				distDirPath: ""
+			}))
+		},
+
+		// blog posts
+		...blogPosts.map(page => ({
+			id: page.id,
+			name: path.basename(page.sourcePath),
+			distPath: page.sourcePath.replace(/^blog\//i, "") + "/index.html",
+			content: "",
+			files: page.files.map(filename => ({
+				fullSourceFilePath: `${source}/${page.sourcePath}/${filename}`,
+				distDirPath: page.sourcePath
+			}))
+		})),
+
 		// articles
 		...articles.map(page => ({
 			id: page.id,
