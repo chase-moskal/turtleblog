@@ -18,9 +18,9 @@ describe("files/list-items function", () => {
 		expect(styleScss.path).toBe("source-demo/style.scss")
 
 		// check a directory
-		const layoutsDir = items.find(item => /^layouts$/.test(item.path))
-		expect(layoutsDir).toBeDefined()
-		expect(layoutsDir.isDirectory).toBeTruthy()
-		expect(layoutsDir.path).toBe("source-demo/layouts")
+		const templatesDir = items.find(item => /^templates$/.test(item.path))
+		expect(templatesDir).toBeDefined()
+		expect(templatesDir.isDirectory).toBeTruthy()
+		expect(templatesDir.path).toBe("source-demo/templates")
 	})
 })

@@ -1,11 +1,12 @@
 
 import {readFile} from "./files/fsc"
 import {pageRead} from "./pages/page-read"
+import {listFiles} from "./files/list-files"
 import {listItemTree} from "./files/list-item-tree"
 import {listDirectories} from "./files/list-directories"
 import {PageData, PugTemplate} from "./pages/interfaces"
+import {PageReference, TurtleReader} from "./interfaces"
 import {promiseAllKeys} from "./toolbox/promise-all-keys"
-import {PageReference, TurtleReader, WebsiteTemplates} from "./interfaces"
 
 const getPugTemplate = async(path: string): Promise<PugTemplate> => ({
 	path,
@@ -26,9 +27,19 @@ export const turtleRead: TurtleReader = async({source}) => {
 	//
 
 	const read = await promiseAllKeys({
-		pugPage: getPugTemplate(`${source}/layouts/page.pug`),
-		pugBlogIndex: getPugTemplate(`${source}/layouts/blog-index.pug`),
-		pugBlogPost: getPugTemplate(`${source}/layouts/blog-post.pug`),
+		pugPage: getPugTemplate(`${source}/templates/page.pug`),
+		pugBlogIndex: getPugTemplate(`${source}/templates/blog-index.pug`),
+		pugBlogPost: getPugTemplate(`${source}/templates/blog-post.pug`),
+
+		styles: Promise.all(
+			(await listFiles(source))
+				.filter(path => /^(.+)\.scss$/i.test(path))
+				.filter(path => !/^_(.+)/i.test(path))
+				.map(async sourcePath => ({
+					sourcePath,
+					data: await readFile(`${source}/${sourcePath}`)
+				}))
+		),
 
 		homePage: pageRead({
 			source,
@@ -42,7 +53,7 @@ export const turtleRead: TurtleReader = async({source}) => {
 			sourcePath: "blog-index"
 		}),
 
-		blogPostDirectories: listDirectories(`${source}/blog`),
+		blogPostDirectories: listDirectories(`${source}/blog`)
 	})
 
 	//
@@ -75,6 +86,7 @@ export const turtleRead: TurtleReader = async({source}) => {
 
 	return {
 		source,
+		styles: read.styles,
 		templates: {
 			home: read.pugPage,
 			article: read.pugPage,

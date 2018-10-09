@@ -22,6 +22,7 @@ import {PageData, Id, FileCopyOutput, PugTemplate} from "./pages/interfaces"
 
 export interface WebsiteMetadata {
 	source: string
+	styles: StyleMetadata[]
 	templates: WebsiteTemplates
 	pages: PageData[]
 	references: {
@@ -44,6 +45,11 @@ export interface PageReference {
 	pageId: Id
 }
 
+export interface StyleMetadata {
+	data: string
+	sourcePath: string
+}
+
 //
 // WEBSITE OUTPUT
 // - final json output for website contents to be written to disk
@@ -53,6 +59,7 @@ export interface PageReference {
 
 export interface WebsiteOutput {
 	pages: PageOutput[]
+	styles: StyleOutput[]
 }
 
 export interface PageOutput {
@@ -61,6 +68,11 @@ export interface PageOutput {
 	distPath: string
 	content: string
 	files: FileCopyOutput[]
+}
+
+export interface StyleOutput {
+	data: string
+	distPath: string
 }
 
 export interface PageReferenceOutput {
