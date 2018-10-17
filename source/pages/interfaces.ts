@@ -6,27 +6,26 @@ export type Id = string
 
 export interface PageData {
 	id: Id
+	details: PageDetails
 	sourcePath: string
 	markdowns: MarkdownData[]
 	pugTemplate: PugTemplate | null
-	files: string[]
+	otherFileNames: string[]
+}
+
+export interface PageDetails {
+	name: string
+	title: string
+	[key: string]: any
 }
 
 export interface PageContext {
 	id: Id
 	type: string
-	name: string
 	link: string
-	title: string
+	details: PageDetails
 	sections: SectionData[]
 	navigation: TreeNode<PageReference>
-}
-
-export interface PageFinal {
-	id: Id
-	html: string
-	distPath: string
-	fileCopies: FileCopyOutput[]
 }
 
 export interface PugTemplate {
@@ -51,6 +50,6 @@ export interface SectionData {
 }
 
 export interface FileCopyOutput {
-	fullSourceFilePath: string
+	sourcePathFull: string
 	distDirPath: string
 }

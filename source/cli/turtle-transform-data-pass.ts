@@ -2,14 +2,14 @@
 
 import * as getStdin from "get-stdin"
 import {dieOnError} from "../toolbox/die-on-error"
-import {turtleTransformMetadataPass} from "../transforms/turtle-transform-metadata-pass"
+import {turtleTransformDataPass} from "../transforms/turtle-transform-data-pass"
 
 dieOnError()
 
 ; (async() => {
 	const stdin = await getStdin()
 	const metadataIn = JSON.parse(stdin)
-	const metadataOut = await turtleTransformMetadataPass({websiteMetadata: metadataIn})
+	const metadataOut = await turtleTransformDataPass({websiteData: metadataIn})
 	const output = JSON.stringify(metadataOut)
 	process.stdout.write(output)
 })()

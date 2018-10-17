@@ -1,6 +1,23 @@
 
 # turtleblog 🐢
 
+expected site directory structure
+
+```
+source/
+	articles/ # contains page dirs
+	blog-index/ # is a page dir
+	blog-posts/ # contains dated page dirs
+	home/ # is a page dir
+	templates/
+		article.pug
+		blog-index.pug
+		blog-post.pug
+		home.pug
+```
+
+--------
+
 &nbsp; *concept blog generator*
 
 here's one way

@@ -1,5 +1,5 @@
 
-@import "style-mixins.scss";
+@import "_style-mixins.scss";
 
 $slicepadding: 2rem;
 $smallpoint: 900px;
@@ -155,7 +155,7 @@ main {
 }
 
 .blog-index {
-	.articles {
+	.posts {
 
 		a {
 			display: block;

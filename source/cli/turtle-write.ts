@@ -9,12 +9,12 @@ import {dieOnError} from "../toolbox/die-on-error"
 dieOnError()
 
 commander
-	.option("-d, --dist [dir]", "website destination directory", "dist")
+	.option("-d, --dist-dir [dir]", "website destination directory", "dist")
 	.parse(process.argv)
 
 ; (async() => {
-	const dist = commander.dist
+	const {distDir} = commander
 	const stdin = await getStdin()
 	const websiteOutput = JSON.parse(stdin)
-	await turtleWrite({websiteOutput, dist})
+	await turtleWrite({websiteOutput, distDir})
 })()

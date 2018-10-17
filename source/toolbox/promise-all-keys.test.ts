@@ -2,14 +2,12 @@
 import {promiseAllKeys} from "./promise-all-keys"
 
 function delay<T>(value: T, delay = 1) {
-	return new Promise<T>((resolve, reject) =>
-		setTimeout(() => resolve(value), delay)
-	)
+	return new Promise<T>(resolve => setTimeout(() => resolve(value), delay))
 }
 
 describe("promise all keys", () => {
 
-	it("properly waits for all object property promises", async() => {
+	it("waits for all object property promises", async() => {
 		const input = {
 			a: delay(1),
 			b: delay("2"),

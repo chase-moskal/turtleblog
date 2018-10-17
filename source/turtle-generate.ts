@@ -12,8 +12,8 @@ import {
 	PageData,
 	PugTemplate,
 	PageContext,
-	MarkdownData,
-	SectionData
+	SectionData,
+	MarkdownData
 } from "./pages/interfaces"
 
 const sassRender = promisify(sass.render)
@@ -28,15 +28,15 @@ const compilePugRenderer = (template: PugTemplate) =>
 /**
  * Generate a turtle website
  */
-export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
-	const {source} = websiteMetadata
+export const turtleGenerate: TurtleGenerator = async({blogDir, websiteData}) => {
+	const {sourceDir} = websiteData
 
 	//
 	// utility functions
 	//
 
 	function getPageById({pageId}: PageReference): PageData {
-		const page = websiteMetadata.pages.find(page => page.id === pageId)
+		const page = websiteData.pages.find(page => page.id === pageId)
 		if (!page) throw new Error(`page id not found "${page.id}"`)
 		return page
 	}
@@ -55,10 +55,10 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 	//
 
 	const pugRenderers = {
-		home: compilePugRenderer(websiteMetadata.templates.home),
-		blogIndex: compilePugRenderer(websiteMetadata.templates.blogIndex),
-		blogPost: compilePugRenderer(websiteMetadata.templates.blogPost),
-		article: compilePugRenderer(websiteMetadata.templates.article)
+		home: compilePugRenderer(websiteData.templates.home),
+		blogIndex: compilePugRenderer(websiteData.templates.blogIndex),
+		blogPost: compilePugRenderer(websiteData.templates.blogPost),
+		article: compilePugRenderer(websiteData.templates.article)
 	}
 
 	//
@@ -66,77 +66,65 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 	//
 
 	const navigation = new TreeNode<PageReference>(undefined, true)
-	navigation.addChildValue(websiteMetadata.references.home)
-	navigation.addChildValue(websiteMetadata.references.blogIndex)
-	for (const articleNode of websiteMetadata.references.articleTree.children)
+	navigation.addChildValue(websiteData.references.home)
+	navigation.addChildValue(websiteData.references.blogIndex)
+	for (const articleNode of websiteData.references.articleTree.children)
 		navigation.addChildNode(articleNode)
 
 	//
 	// page-specific generators
 	//
 
-	async function generateHomePage(data: PageData): Promise<PageOutput> {
-		const pugRenderer = (data.pugTemplate)
-			? compilePugRenderer(data.pugTemplate)
-			: pugRenderers.home
+	async function generatePage({
+		type,
+		pageData,
+		fallbackPugRenderer,
+		sourcePathToDistPath = sourcePath => sourcePath,
+		distPathToLink = distPath => "/" + distPath.replace(/index\.html$/i, "")
+	}: {
+		type: string
+		pageData: PageData
+		fallbackPugRenderer: pug.compileTemplate
+		sourcePathToDistPath?: (sourcePath: string) => string
+		distPathToLink?: (distPath: string) => string
+	}): Promise<PageOutput> {
+
+		const pugRenderer = (pageData.pugTemplate)
+			? compilePugRenderer(pageData.pugTemplate)
+			: fallbackPugRenderer
+
+		const distPath = sourcePathToDistPath(pageData.sourcePath)
 
 		const pageContext: PageContext = {
-			id: data.id,
-			type: "home",
-			name: "home",
-			link: "/",
-			title: "home",
-			sections: renderMarkdownsToSections(data.markdowns),
+			id: pageData.id,
+			type,
+			details: pageData.details,
+			link: distPathToLink(distPath),
+			sections: renderMarkdownsToSections(pageData.markdowns),
 			navigation
 		}
 
-		return {
-			id: data.id,
-			name: "home",
-			distPath: "index.html",
-			content: pugRenderer({pageContext, websiteMetadata}),
-			files: home.files.map(file => ({
-				fullSourceFilePath: `${source}/${home.sourcePath}/${file}`,
-				distDirPath: ""
+		const output: PageOutput = {
+			id: pageData.id,
+			name: pageContext.details.name,
+			distPath,
+			html: pugRenderer({pageContext, websiteData}),
+			context: pageContext,
+			files: pageData.otherFileNames.map(file => ({
+				sourcePathFull: `${sourceDir}/${pageData.sourcePath}/${file}`,
+				distDirPath: path.dirname(distPath)
 			}))
 		}
-	}
 
-	async function generateBlogIndex(data: PageData): Promise<PageOutput> {
-		const pugRenderer = (data.pugTemplate)
-			? compilePugRenderer(data.pugTemplate)
-			: pugRenderers.blogIndex
-
-		const pageContext: PageContext = {
-			id: data.id,
-			type: "blog-index",
-			name: "blog-index",
-			link: "/",
-			title: "blog index",
-			sections: renderMarkdownsToSections(data.markdowns),
-			navigation
-		}
-
-		return {
-			id: data.id,
-			name: "home",
-			distPath: "blog/index.html",
-			content: pugRenderer({pageContext, websiteMetadata}),
-			files: home.files.map(file => ({
-				fullSourceFilePath: `${source}/${home.sourcePath}/${file}`,
-				distDirPath: "blog"
-			}))
-		}
+		return output
 	}
 
 	//
 	// obtain page data
 	//
 
-	const home = getPageById(websiteMetadata.references.home)
-	const blogIndex = getPageById(websiteMetadata.references.blogIndex)
-	const blogPosts = websiteMetadata.references.blogPosts.map(getPageById)
-	const articles = websiteMetadata.references.articles.map(getPageById)
+	const blogPosts = websiteData.references.blogPosts.map(getPageById)
+	const articles = websiteData.references.articles.map(getPageById)
 
 	return {
 
@@ -147,36 +135,41 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 		pages: [
 
 			// home page
-			await generateHomePage(home),
-	
+			await generatePage({
+				type: "home",
+				fallbackPugRenderer: pugRenderers.home,
+				sourcePathToDistPath: () => "index.html",
+				pageData: getPageById(websiteData.references.home)
+			}),
+
 			// blog index
-			await generateBlogIndex(blogIndex),
-	
+			await generatePage({
+				type: "blog-index",
+				fallbackPugRenderer: pugRenderers.blogIndex,
+				pageData: getPageById(websiteData.references.blogIndex),
+				sourcePathToDistPath: () => `${blogDir}/index.html`
+			}),
+
 			// blog posts
-			...blogPosts.map(page => ({
-				id: page.id,
+			...await Promise.all(blogPosts.map(async pageData => generatePage({
+				pageData,
 				type: "blog-post",
-				name: path.basename(page.sourcePath),
-				distPath: page.sourcePath.replace(/^blog\//i, "") + "/index.html",
-				content: "",
-				files: page.files.map(filename => ({
-					fullSourceFilePath: `${source}/${page.sourcePath}/${filename}`,
-					distDirPath: page.sourcePath
-				}))
-			})),
-	
+				fallbackPugRenderer: pugRenderers.blogPost,
+				sourcePathToDistPath: sourcePath => blogDir
+					+ "/"
+					+ sourcePath.replace(/^blog-posts\//i, "")
+					+ "/index.html"
+			}))),
+
 			// articles
-			...articles.map(page => ({
-				id: page.id,
+			...await Promise.all(articles.map(async pageData => generatePage({
+				pageData,
 				type: "article",
-				name: path.basename(page.sourcePath),
-				distPath: page.sourcePath.replace(/^articles\//i, "") + "/index.html",
-				content: "",
-				files: page.files.map(filename => ({
-					fullSourceFilePath: `${source}/${page.sourcePath}/${filename}`,
-					distDirPath: page.sourcePath
-				}))
-			}))
+				sourcePathToDistPath: sourcePath => "/"
+				+ sourcePath.replace(/^articles\//i, "")
+				+ "/index.html",
+				fallbackPugRenderer: pugRenderers.article
+			})))
 		],
 
 		//
@@ -184,10 +177,10 @@ export const turtleGenerate: TurtleGenerator = async({websiteMetadata}) => {
 		//
 
 		styles: await Promise.all(
-			websiteMetadata.styles.map(async({data, sourcePath}) => {
-				const sassResult = await sassRender({data, includePaths: [source], fiber})
+			websiteData.styles.map(async({scss, sourcePath}) => {
+				const sassResult = await sassRender({data: scss, includePaths: [sourceDir], fiber})
 				return {
-					data: sassResult.css.toString("utf8"),
+					css: sassResult.css.toString("utf8"),
 					distPath: sourcePath.replace(/\.scss$/i, ".css")
 				}
 			})

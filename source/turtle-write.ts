@@ -14,21 +14,21 @@ function prepareDir(dist: string, distPath: string) {
 /**
  * Write website output to disk
  */
-export const turtleWrite: TurtleWriter = async({websiteOutput, dist}) => {
+export const turtleWrite: TurtleWriter = async({websiteOutput, distDir}) => {
 
 	const pageWriteOperations = websiteOutput.pages.map(
-		async({distPath, content}) => {
-			prepareDir(dist, distPath)
-			const path = `${dist}/${distPath}`
-			return writeFile(path, content)
+		async({distPath, html}) => {
+			prepareDir(distDir, distPath)
+			const path = `${distDir}/${distPath}`
+			return writeFile(path, html)
 		}
 	)
 
 	const styleWriteOperations = websiteOutput.styles.map(
-		async({distPath, data}) => {
-			prepareDir(dist, distPath)
-			const path = `${dist}/${distPath}`
-			return writeFile(path, data)
+		async({distPath, css}) => {
+			prepareDir(distDir, distPath)
+			const path = `${distDir}/${distPath}`
+			return writeFile(path, css)
 		}
 	)
 

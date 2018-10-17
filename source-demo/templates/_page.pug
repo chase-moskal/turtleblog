@@ -1,10 +1,10 @@
 
 doctype html
-html(class=`page ${pageContext.type} ${pageContext.name}`)
+html(class=`page ${pageContext.type} ${pageContext.details.name}`)
 
 head
 	meta(charset="utf-8")
-	title= pageTitle
+	title= pageContext.details.title
 	link(rel="stylesheet" href="/style.css")
 	block head1
 
@@ -16,7 +16,10 @@ body
 			span Turtle
 			span Blog
 		nav
-			p Nav coming soon!
+			a(href="/") home
+			a(href="/about/") about
+			a(href="/coolarea/") coolarea
+			a(href="/blog/") blog
 
 	block body2
 
@@ -24,8 +27,8 @@ body
 		block body3
 		each section in pageContext.sections
 			section.section(data-name=section.name)
-				div.section-name= section.name
-				div.section-content !{section.content}
+				//- div.section-name= section.name
+				div.section-content !{section.html}
 		block body4
 
 	block body5

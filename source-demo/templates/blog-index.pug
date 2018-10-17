@@ -3,10 +3,10 @@ extends _page.pug
 
 block body4
 	.posts
-		each post in websiteMetadata.references.blogPosts
-			- var blogPage = websiteMetadata.pages.find(p => p.id === post.pageId)
-			a(href=blogPage.link)
+		each post in websiteData.references.blogPosts
+			- var blogPage = websiteData.pages.find(p => p.id === post.pageId)
+			a(href=`/blog/${blogPage.details.name}/`)
 				//- span= post.date
 				//- |
 				//- |
-				span= blogPage.title
+				span= blogPage.details.title

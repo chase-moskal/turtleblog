@@ -20,56 +20,59 @@ const pageToReference = (page: PageData): PageReference => ({
 /**
  * Read a turtle website directory and return website metadata
  */
-export const turtleRead: TurtleReader = async({source}) => {
+export const turtleRead: TurtleReader = async({sourceDir}) => {
 
 	//
-	// read all resources simultaneously
+	// read resources simultaneously for better performance
 	//
 
 	const read = await promiseAllKeys({
 		templates: promiseAllKeys({
-			home: getPugTemplate(`${source}/templates/home.pug`),
-			article: getPugTemplate(`${source}/templates/article.pug`),
-			blogIndex: getPugTemplate(`${source}/templates/blog-index.pug`),
-			blogPost: getPugTemplate(`${source}/templates/blog-post.pug`),
+			home: getPugTemplate(`${sourceDir}/templates/home.pug`),
+			article: getPugTemplate(`${sourceDir}/templates/article.pug`),
+			blogIndex: getPugTemplate(`${sourceDir}/templates/blog-index.pug`),
+			blogPost: getPugTemplate(`${sourceDir}/templates/blog-post.pug`),
 		}),
 
 		styles: Promise.all(
-			(await listFiles(source))
+			(await listFiles(sourceDir))
 				.filter(path => /^(.+)\.scss$/i.test(path))
 				.filter(path => !/^_(.+)/i.test(path))
 				.map(async sourcePath => ({
 					sourcePath,
-					data: await readFile(`${source}/${sourcePath}`)
+					scss: await readFile(`${sourceDir}/${sourcePath}`)
 				}))
 		),
 
 		homePage: pageRead({
-			source,
+			sourceDir,
 			sourcePath: "home"
 		}),
 
-		articleTree: listItemTree(`${source}/articles`),
+		articleItemTree: listItemTree(`${sourceDir}/articles`),
 
 		blogIndexPage: pageRead({
-			source,
+			sourceDir,
 			sourcePath: "blog-index"
 		}),
 
-		blogPostDirectories: listDirectories(`${source}/blog`)
+		blogPostDirectories: listDirectories(`${sourceDir}/blog-posts`)
 	})
 
 	//
 	// read article pages
 	//
 
-	const articlePageTree = await read.articleTree
-		.filter(fsItem => !!fsItem.isDirectory)
-		.map(async fsItem => pageRead({
-			source,
-			sourcePath: `articles/${fsItem.path}`
-		}))
-		.promiseAll()
+	const articlePageTree = await (
+		read.articleItemTree
+			.filter(fsItem => !!fsItem.isDirectory)
+			.map(async fsItem => pageRead({
+				sourceDir,
+				sourcePath: `articles/${fsItem.path}`
+			}))
+			.promiseAll()
+	)
+
 	const articlePages = articlePageTree.toArray().filter(page => !!page)
 
 	//
@@ -78,8 +81,8 @@ export const turtleRead: TurtleReader = async({source}) => {
 
 	const blogPostPages = await Promise.all(
 		read.blogPostDirectories.map(async pageName => pageRead({
-			source,
-			sourcePath: `blog/${pageName}`
+			sourceDir,
+			sourcePath: `blog-posts/${pageName}`
 		}))
 	)
 
@@ -88,7 +91,7 @@ export const turtleRead: TurtleReader = async({source}) => {
 	//
 
 	return {
-		source,
+		sourceDir,
 		styles: read.styles,
 		templates: read.templates,
 		pages: [

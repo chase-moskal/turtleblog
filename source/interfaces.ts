@@ -3,28 +3,36 @@
 
 path terminology
 
+- sourceDir: source base directory
 - sourcePath: path within the source dir
+- sourcePathFull: source path which includes source dir
+- distDir: dist base directory
 - distPath: path within the dist dir
-- fullSourcePath: includes source dir
-- fullDistPath: includes dist dir
+- distPathFull: dist path which includes dist dir
 
 */
 
 import {TreeNode} from "./toolbox/tree-node"
-import {PageData, Id, FileCopyOutput, PugTemplate} from "./pages/interfaces"
+import {
+	Id,
+	PageData,
+	PugTemplate,
+	FileCopyOutput,
+	PageContext
+} from "./pages/interfaces"
 
 //
-// WEBSITE METADATA
+// WEBSITE DATA
 // - data about website source material
 // - is the result of turtle-read function
 // - is the input for turtle-generate function
 //
 
-export interface WebsiteMetadata {
-	source: string
-	styles: StyleMetadata[]
-	templates: WebsiteTemplates
+export interface WebsiteData {
+	sourceDir: string
 	pages: PageData[]
+	styles: StyleData[]
+	templates: WebsiteTemplates
 	references: {
 		home: PageReference
 		blogIndex: PageReference
@@ -45,8 +53,8 @@ export interface PageReference {
 	pageId: Id
 }
 
-export interface StyleMetadata {
-	data: string
+export interface StyleData {
+	scss: string
 	sourcePath: string
 }
 
@@ -65,13 +73,14 @@ export interface WebsiteOutput {
 export interface PageOutput {
 	id: Id
 	name: string
+	html: string
 	distPath: string
-	content: string
+	context: PageContext
 	files: FileCopyOutput[]
 }
 
 export interface StyleOutput {
-	data: string
+	css: string
 	distPath: string
 }
 
@@ -94,14 +103,14 @@ export interface NavigationLinkOutput extends PageReferenceOutput {}
 //
 
 export type TurtleReader = (options: TurtleReadOptions) =>
-	Promise<WebsiteMetadata>
+	Promise<WebsiteData>
 
 export type TurtleGenerator = (options: TurtleGenerateOptions) =>
 	Promise<WebsiteOutput>
 
-export type TurtleMetadataTransformer =
-	(options: TurtleMetadataTransformOptions) =>
-		Promise<WebsiteMetadata>
+export type TurtleDataTransformer =
+	(options: TurtleDataTransformOptions) =>
+		Promise<WebsiteData>
 
 export type TurtleOutputTransformer =
 	(options: TurtleOutputTransformOptions) =>
@@ -111,17 +120,16 @@ export type TurtleWriter = (options: TurtleWriteOptions) =>
 		Promise<void>
 
 export interface TurtleReadOptions {
-	source: string
+	sourceDir: string
 }
 
 export interface TurtleGenerateOptions {
-	websiteMetadata: WebsiteMetadata
-	// blogDir: string
-	// homeName: string
+	blogDir: string
+	websiteData: WebsiteData
 }
 
-export interface TurtleMetadataTransformOptions {
-	websiteMetadata: WebsiteMetadata
+export interface TurtleDataTransformOptions {
+	websiteData: WebsiteData
 }
 
 export interface TurtleOutputTransformOptions {
@@ -129,6 +137,6 @@ export interface TurtleOutputTransformOptions {
 }
 
 export interface TurtleWriteOptions {
-	dist: string
+	distDir: string
 	websiteOutput: WebsiteOutput
 }
