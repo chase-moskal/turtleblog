@@ -121,6 +121,7 @@ export type TurtleWriter = (options: TurtleWriteOptions) =>
 
 export interface TurtleReadOptions {
 	sourceDir: string
+	siteTitle: string
 }
 
 export interface TurtleGenerateOptions {

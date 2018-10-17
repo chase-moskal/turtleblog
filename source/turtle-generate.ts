@@ -4,20 +4,17 @@ import * as path from "path"
 import * as sass from "sass"
 import {promisify} from "util"
 import * as fiber from "fibers"
-import * as MarkdownIt from "markdown-it"
 
 import {TreeNode} from "./toolbox/tree-node"
-import {TurtleGenerator, PageReference, PageOutput} from "./interfaces"
+import {pageGenerate} from "./pages/page-generate"
 import {
 	PageData,
-	PugTemplate,
-	PageContext,
-	SectionData,
-	MarkdownData
+	PugTemplate
 } from "./pages/interfaces"
 
+import {TurtleGenerator, PageReference} from "./interfaces"
+
 const sassRender = promisify(sass.render)
-const markdownIt = new MarkdownIt({html: true})
 
 const compilePugRenderer = (template: PugTemplate) =>
 	pug.compile(template.pugContent, {
@@ -39,15 +36,6 @@ export const turtleGenerate: TurtleGenerator = async({blogDir, websiteData}) => 
 		const page = websiteData.pages.find(page => page.id === pageId)
 		if (!page) throw new Error(`page id not found "${page.id}"`)
 		return page
-	}
-
-	function renderMarkdownsToSections(markdowns: MarkdownData[]): SectionData[] {
-		return markdowns.map(({markdown, filename}) => {
-			const name = path.parse(filename).name
-			const title = name.replace(/-/, " ")
-			const html = markdownIt.render(markdown)
-			return {name, title, html}
-		})
 	}
 
 	//
@@ -72,54 +60,6 @@ export const turtleGenerate: TurtleGenerator = async({blogDir, websiteData}) => 
 		navigation.addChildNode(articleNode)
 
 	//
-	// page-specific generators
-	//
-
-	async function generatePage({
-		type,
-		pageData,
-		fallbackPugRenderer,
-		sourcePathToDistPath = sourcePath => sourcePath,
-		distPathToLink = distPath => "/" + distPath.replace(/index\.html$/i, "")
-	}: {
-		type: string
-		pageData: PageData
-		fallbackPugRenderer: pug.compileTemplate
-		sourcePathToDistPath?: (sourcePath: string) => string
-		distPathToLink?: (distPath: string) => string
-	}): Promise<PageOutput> {
-
-		const pugRenderer = (pageData.pugTemplate)
-			? compilePugRenderer(pageData.pugTemplate)
-			: fallbackPugRenderer
-
-		const distPath = sourcePathToDistPath(pageData.sourcePath)
-
-		const pageContext: PageContext = {
-			id: pageData.id,
-			type,
-			details: pageData.details,
-			link: distPathToLink(distPath),
-			sections: renderMarkdownsToSections(pageData.markdowns),
-			navigation
-		}
-
-		const output: PageOutput = {
-			id: pageData.id,
-			name: pageContext.details.name,
-			distPath,
-			html: pugRenderer({pageContext, websiteData}),
-			context: pageContext,
-			files: pageData.otherFileNames.map(file => ({
-				sourcePathFull: `${sourceDir}/${pageData.sourcePath}/${file}`,
-				distDirPath: path.dirname(distPath)
-			}))
-		}
-
-		return output
-	}
-
-	//
 	// obtain page data
 	//
 
@@ -135,7 +75,10 @@ export const turtleGenerate: TurtleGenerator = async({blogDir, websiteData}) => 
 		pages: [
 
 			// home page
-			await generatePage({
+			await pageGenerate({
+				sourceDir,
+				navigation,
+				websiteData,
 				type: "home",
 				fallbackPugRenderer: pugRenderers.home,
 				sourcePathToDistPath: () => "index.html",
@@ -143,7 +86,10 @@ export const turtleGenerate: TurtleGenerator = async({blogDir, websiteData}) => 
 			}),
 
 			// blog index
-			await generatePage({
+			await pageGenerate({
+				sourceDir,
+				navigation,
+				websiteData,
 				type: "blog-index",
 				fallbackPugRenderer: pugRenderers.blogIndex,
 				pageData: getPageById(websiteData.references.blogIndex),
@@ -151,8 +97,11 @@ export const turtleGenerate: TurtleGenerator = async({blogDir, websiteData}) => 
 			}),
 
 			// blog posts
-			...await Promise.all(blogPosts.map(async pageData => generatePage({
+			...await Promise.all(blogPosts.map(async pageData => pageGenerate({
 				pageData,
+				sourceDir,
+				navigation,
+				websiteData,
 				type: "blog-post",
 				fallbackPugRenderer: pugRenderers.blogPost,
 				sourcePathToDistPath: sourcePath => blogDir
@@ -162,13 +111,16 @@ export const turtleGenerate: TurtleGenerator = async({blogDir, websiteData}) => 
 			}))),
 
 			// articles
-			...await Promise.all(articles.map(async pageData => generatePage({
+			...await Promise.all(articles.map(async pageData => pageGenerate({
 				pageData,
+				sourceDir,
+				navigation,
+				websiteData,
 				type: "article",
+				fallbackPugRenderer: pugRenderers.article,
 				sourcePathToDistPath: sourcePath => "/"
-				+ sourcePath.replace(/^articles\//i, "")
-				+ "/index.html",
-				fallbackPugRenderer: pugRenderers.article
+					+ sourcePath.replace(/^articles\//i, "")
+					+ "/index.html"
 			})))
 		],
 

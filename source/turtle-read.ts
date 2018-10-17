@@ -20,7 +20,7 @@ const pageToReference = (page: PageData): PageReference => ({
 /**
  * Read a turtle website directory and return website metadata
  */
-export const turtleRead: TurtleReader = async({sourceDir}) => {
+export const turtleRead: TurtleReader = async({siteTitle, sourceDir}) => {
 
 	//
 	// read resources simultaneously for better performance
@@ -46,6 +46,7 @@ export const turtleRead: TurtleReader = async({sourceDir}) => {
 
 		homePage: pageRead({
 			sourceDir,
+			siteTitle,
 			sourcePath: "home"
 		}),
 
@@ -53,6 +54,7 @@ export const turtleRead: TurtleReader = async({sourceDir}) => {
 
 		blogIndexPage: pageRead({
 			sourceDir,
+			siteTitle,
 			sourcePath: "blog-index"
 		}),
 
@@ -68,6 +70,7 @@ export const turtleRead: TurtleReader = async({sourceDir}) => {
 			.filter(fsItem => !!fsItem.isDirectory)
 			.map(async fsItem => pageRead({
 				sourceDir,
+				siteTitle,
 				sourcePath: `articles/${fsItem.path}`
 			}))
 			.promiseAll()
@@ -82,6 +85,7 @@ export const turtleRead: TurtleReader = async({sourceDir}) => {
 	const blogPostPages = await Promise.all(
 		read.blogPostDirectories.map(async pageName => pageRead({
 			sourceDir,
+			siteTitle,
 			sourcePath: `blog-posts/${pageName}`
 		}))
 	)

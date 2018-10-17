@@ -1,14 +1,14 @@
 
-import {dirname} from "path"
-import {mkdir} from "shelljs"
+import * as path from "path"
+import * as shell from "shelljs"
 
-import {writeFile} from "./files/fsc"
+import * as fsc from "./files/fsc"
 import {TurtleWriter} from "./interfaces"
 
 function prepareDir(dist: string, distPath: string) {
-	const dir = dirname(distPath)
+	const dir = path.dirname(distPath)
 	const dirPath = `${dist}/${dir === "." ? "" : dir}`
-	mkdir("-p", dirPath)
+	shell.mkdir("-p", dirPath)
 }
 
 /**
@@ -17,10 +17,13 @@ function prepareDir(dist: string, distPath: string) {
 export const turtleWrite: TurtleWriter = async({websiteOutput, distDir}) => {
 
 	const pageWriteOperations = websiteOutput.pages.map(
-		async({distPath, html}) => {
+		async({distPath, html, files}) => {
 			prepareDir(distDir, distPath)
 			const path = `${distDir}/${distPath}`
-			return writeFile(path, html)
+			const writePageOperation = fsc.writeFile(path, html)
+			const copyFilesOperations = files.map(({sourcePathFull, distDirPath}) =>
+				shell.cp(sourcePathFull, `${distDir}/${distDirPath}`))
+			await Promise.all([writePageOperation, ...copyFilesOperations])
 		}
 	)
 
@@ -28,7 +31,7 @@ export const turtleWrite: TurtleWriter = async({websiteOutput, distDir}) => {
 		async({distPath, css}) => {
 			prepareDir(distDir, distPath)
 			const path = `${distDir}/${distPath}`
-			return writeFile(path, css)
+			await fsc.writeFile(path, css)
 		}
 	)
 

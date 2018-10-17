@@ -15,9 +15,11 @@ const generateId = () => shortid.generate()
  */
 export async function pageRead({
 	sourceDir,
+	siteTitle,
 	sourcePath
 }: {
 	sourceDir: string
+	siteTitle: string
 	sourcePath: string
 }): Promise<PageData | null> {
 
@@ -64,7 +66,7 @@ export async function pageRead({
 	// setting some default details
 	const details = {
 		name: defaultName,
-		title: defaultName.replace(/-/ig, " "),
+		title: siteTitle + " - " + defaultName.replace(/-/ig, " "),
 		...detailsReading
 	}
 
