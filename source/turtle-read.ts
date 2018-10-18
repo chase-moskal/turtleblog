@@ -18,7 +18,7 @@ const pageToReference = (page: PageData): PageReference => ({
 })
 
 /**
- * Read a turtle website directory and return website metadata
+ * Read a turtle website directory and return website data
  */
 export const turtleRead: TurtleReader = async({siteTitle, sourceDir}) => {
 
@@ -91,7 +91,7 @@ export const turtleRead: TurtleReader = async({siteTitle, sourceDir}) => {
 	)
 
 	//
-	// return website metadata
+	// return website data
 	//
 
 	return {

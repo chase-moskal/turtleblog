@@ -14,7 +14,7 @@ commander
 
 ; (async() => {
 	const {siteTitle, sourceDir} = commander
-	const websiteMetadata = await turtleRead({siteTitle, sourceDir})
-	const stdout = JSON.stringify(websiteMetadata)
+	const websiteData = await turtleRead({siteTitle, sourceDir})
+	const stdout = JSON.stringify(websiteData)
 	process.stdout.write(stdout)
 })()

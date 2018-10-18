@@ -8,8 +8,8 @@ dieOnError()
 
 ; (async() => {
 	const stdin = await getStdin()
-	const metadataIn = JSON.parse(stdin)
-	const metadataOut = await turtleTransformDataPass({websiteData: metadataIn})
-	const output = JSON.stringify(metadataOut)
+	const dataIn = JSON.parse(stdin)
+	const dataOut = await turtleTransformDataPass({websiteData: dataIn})
+	const output = JSON.stringify(dataOut)
 	process.stdout.write(output)
 })()
