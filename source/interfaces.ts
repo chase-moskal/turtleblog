@@ -105,7 +105,7 @@ export interface NavigationLinkOutput extends PageReferenceOutput {}
 export type TurtleReader = (options: TurtleReadOptions) =>
 	Promise<WebsiteData>
 
-export type TurtleGenerator = (options: TurtleGenerateOptions) =>
+export type TurtleGenerator<CustomPageContext = PageContext> = (options: TurtleGenerateOptions<CustomPageContext>) =>
 	Promise<WebsiteOutput>
 
 export type TurtleDataTransformer =
@@ -124,10 +124,13 @@ export interface TurtleReadOptions {
 	siteTitle: string
 }
 
-export interface TurtleGenerateOptions {
+export interface TurtleGenerateOptions<CustomPageContext> {
 	blogDir: string
 	websiteData: WebsiteData
+	contextProcessor?: ContextProcessor<CustomPageContext>
 }
+
+export type ContextProcessor<CustomPageContext> = (pageContext: PageContext) => Promise<CustomPageContext>
 
 export interface TurtleDataTransformOptions {
 	websiteData: WebsiteData
